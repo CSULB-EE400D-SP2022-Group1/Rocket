@@ -7,7 +7,8 @@ In this repo, we will assemble the code for our rocket. I will manage this docum
 
 <details><summary>Project Logs</summary>
   <details><summary>2/9/22</summary>
+  <p>
   - Repo created
   - Directories added
-
+  </p>
 
