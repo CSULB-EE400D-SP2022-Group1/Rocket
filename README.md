@@ -7,6 +7,6 @@ In this repo, we will assemble the code for our rocket. I will manage this docum
 
 2/9/22
 
-_Repo created
-_Directories added
+- Repo created
+- Directories added
 
