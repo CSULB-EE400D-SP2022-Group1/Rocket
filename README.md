@@ -29,15 +29,16 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Model Rocket Avionics Module</h3>
 
   <p align="center">
-    project_description
+    Our group will design and code a model rocket avionics module.
     <br />
+<!--
     <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />
     <br />
@@ -47,11 +48,13 @@
     ·
     <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
   </p>
+-->
 </div>
 
 
 
 <!-- TABLE OF CONTENTS -->
+<!--
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -76,7 +79,7 @@
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
-
+-->
 
 
 <!-- ABOUT THE PROJECT -->
@@ -92,20 +95,16 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [PlatformIO](https://platformio.org/)
+* [C++](https://isocpp.org/)
+* [Python](https://www.python.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 <!-- GETTING STARTED -->
+<!--
 ## Getting Started
 
 This is an example of how you may give instructions on setting up your project locally.
@@ -136,10 +135,11 @@ This is an example of how to list things you need to use the software and how to
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
+-->
 
 
 <!-- USAGE EXAMPLES -->
+<!--
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
@@ -147,7 +147,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
+-->
 
 
 <!-- ROADMAP -->
@@ -194,9 +194,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/CSULB-EE400D-SP2022-Group1/Rocket](https://github.com/CSULB-EE400D-SP2022-Group1/Rocket)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
