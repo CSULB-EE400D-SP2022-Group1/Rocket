@@ -1,6 +1,6 @@
 #include <tinyfsm.hpp>
-#include <arduino>
-#include <stdlib>
+#include <arduino.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -15,9 +15,5 @@ Yet to do:
 []  Error handling
 
 */
-    enum state{
-        Iniitialize, Pad_idle, Pad_hold, Ascent, Descent, Landing, Landing_idle //preliminary list of states, subject to change
-    }
-
 
 }
