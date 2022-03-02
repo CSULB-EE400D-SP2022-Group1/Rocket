@@ -20,22 +20,22 @@ struct red            : Sensors { };
 struct reset          : tinyfsm::Event { };
 
 struct  pad_idle      : tinyfsm::Event
-{}
+{};
 
 struct  pad_hold      : tinyfsm::Event
-{}
+{};
 
 struct  ascent        : tinyfsm::Event
-{}
+{};
 
 struct  descent       : tinyfsm::Event
-{}
+{};
 
 struct  landing       : tinyfsm::Event
-{}
+{};
 
 struct  landing_idle  : tinyfsm::Event
-{}
+{};
 // ----------------------------------------------------------------------------
 // Rocket (FSM base class) declaration
 //
