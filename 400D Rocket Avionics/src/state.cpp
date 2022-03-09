@@ -1,7 +1,5 @@
-#include <tinyfsm.hpp>
-#include <arduino>
-#include <stdlib>
-
+#include <stdio.h>
+#include <iostream>
 using namespace std;
 
 int state_machine{  //state_machine to be called from main?

@@ -3,8 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/400D Rocket Avionics/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
