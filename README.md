@@ -39,14 +39,14 @@
     Our group will design and code a model rocket avionics module.
     <br />
 <!--
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/issues">Request Feature</a>
   </p>
 -->
 </div>
@@ -84,11 +84,11 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+<!--
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
+Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `CSULB-EE400D-SP2022-Group1`, `Rocket`, `linkedin_username`, `Rocket Avionics Module`, `A senior design project to launch a model rocket and collect in-flight data`
+-->
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -123,7 +123,7 @@ This is an example of how to list things you need to use the software and how to
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/CSULB-EE400D-SP2022-Group1/Rocket.git
    ```
 3. Install NPM packages
    ```sh
@@ -153,12 +153,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] Sensor Suite
+    - [ ] BME
+    - [ ] IMU
+    - [ ] GPS 
+- [ ] State Machine
+- [ ] Pyro-Deploy Chute Recovery System
+- [ ] DC-DC Converter Power Supply
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -167,16 +170,9 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Unfortunately, this is a school project and we cannot accept contributions from the public.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+If you have suggestions or resources that you think can benefit this project, please open an issue with the tag "enhancement".
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -203,7 +199,7 @@ Project Link: [https://github.com/CSULB-EE400D-SP2022-Group1/Rocket](https://git
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
+* [tinyFSM](https://github.com/digint/tinyfsm)
 * []()
 * []()
 
@@ -213,16 +209,16 @@ Project Link: [https://github.com/CSULB-EE400D-SP2022-Group1/Rocket](https://git
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/CSULB-EE400D-SP2022-Group1/Rocket.svg?style=for-the-badge
+[contributors-url]: https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/CSULB-EE400D-SP2022-Group1/Rocket.svg?style=for-the-badge
+[forks-url]: https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/network/members
+[stars-shield]: https://img.shields.io/github/stars/CSULB-EE400D-SP2022-Group1/Rocket.svg?style=for-the-badge
+[stars-url]: https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/stargazers
+[issues-shield]: https://img.shields.io/github/issues/CSULB-EE400D-SP2022-Group1/Rocket.svg?style=for-the-badge
+[issues-url]: https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/issues
+[license-shield]: https://img.shields.io/github/license/CSULB-EE400D-SP2022-Group1/Rocket.svg?style=for-the-badge
+[license-url]: https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
