@@ -3,7 +3,6 @@
 #include <Adafruit_BME280.h>
 #include <Arduino.h>
 
-#define BME_CS 10
 #define SEALEVELPRESSURE_HPA (baseline)
 
 const int FREQUENCY = 33;                       // proposed frequency at which we are logging data
