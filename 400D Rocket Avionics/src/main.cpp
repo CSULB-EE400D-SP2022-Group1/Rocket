@@ -2,7 +2,6 @@
 #include "Data_Storage.h"
 
 Data_Storage storage;
-File dataFile;
 
 void setup()
 {
@@ -18,7 +17,7 @@ void setup()
 
   // Initialize File Storage  
   storage.init();
-  storage.formatFlash();  
+  storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
   storage.initFiles();
 }
 
