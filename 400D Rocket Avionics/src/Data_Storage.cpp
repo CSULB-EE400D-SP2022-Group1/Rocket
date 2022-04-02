@@ -2,8 +2,7 @@
 
 
 bool Data_Storage::init()
-{
-    
+{    
     if(!begin()) // attempt to start QSPI NOR Flash
     {
         Serial.println("NOR FLASH FAILED TO INITITALIZE");
@@ -172,7 +171,6 @@ void Data_Storage::formatFlash()
 bool Data_Storage::writeData(char filename[13], String data)
 {
     File dataFile = open(filename, FILE_WRITE);
-
     if (dataFile) // check if file is available
     {
         dataFile.println(data); // write data line in file
@@ -208,8 +206,46 @@ void Data_Storage::printData(char filename[13])
 }
 
 
-void Data_Storage::dumpData(char filename[13])
+bool Data_Storage::dumpData()
 {
+    if(!SD.begin(BUILTIN_SDCARD)) // attempt to start QSPI NOR Flash
+    {
+        Serial.println("SD CARD FAILED TO INITITALIZE");
+        return 0; // Fail
+    }
+    else
+    {   Serial.println("SD Card Successfully Initialized"); }
 
+    SD.remove("BME.csv");
+    SD.remove("IMU.csv");
+    SD.remove("GPS.csv");
+    SD.remove("FSM.csv");
+
+    dumpFile("BME.csv");
+    dumpFile("IMU.csv");
+    dumpFile("GPS.csv");
+    dumpFile("FSM.csv");
+    
+    return 1;
 }
 
+
+bool Data_Storage::dumpFile(char filename[13])
+{
+    Serial.print("Dumping ");
+    Serial.print(filename);
+    Serial.print(" to SD Card.....");
+    File dataFile = open(filename, FILE_READ);    
+    File dumpFile = SD.open(filename, FILE_WRITE);
+    while(dataFile.available())
+    {        
+        char data[13];
+        dataFile.readBytes(data,1);
+        dumpFile.printf(data);
+    }
+    dataFile.close();        
+    dumpFile.close();
+    Serial.println("Complete");
+
+    return 1;
+}
