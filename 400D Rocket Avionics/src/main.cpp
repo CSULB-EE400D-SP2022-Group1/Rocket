@@ -1,168 +1,73 @@
 #include <Arduino.h>
+#include "Data_Storage.h"
 
-//Set to true to enable serial monitor debugging info
-bool DEBUG[true];  
+#define DEBUG false
 
-//Switch Variables:
-bool irq_BME[true];
-bool irq_IMU[true];
-bool irq_GPS[true];
+Data_Storage storage;
 
-bool go_launch[true];
+void test_datalogging();
 
-// fake interrupt function to pass 'IRQ = true' to machine
-bool IRQ (bool BME, bool IMU, bool GPS) {
-  if (BME == true &&
-      IMU == true && 
-      GPS == true) {
-    return true;
+void setup()
+{
+  Serial.begin(1000000); // initialize fast serial comms
+  delay(5000); // testing delay, not necessary for flight
 
-  } else {
-    return false;
-  };
-};
+  // Initialize BME
 
-// Build STATES list
-enum state_list {
-  INIT,
-  PAD_HOLD,
-  PAD_IDLE,
-  ASCENT,
-  DESCENT,
-  LANDING,
-  LANDING_IDLE
-};
 
-// Build flag list as bool
-struct flag_list {
-  bool flag;
-} init,
-  init_error,
-  standby,
-  launch,
-  apogee,
-  drogues,
-  crit_alt,
-  pyro_arm,
-  main_chute;
+  // Initialize IMU
 
-// State transition variables take STATE list values (enum)
-state_list state_now;
-state_list state_prev;
 
-// the machine
-void machine() {
-  // state history
-  state_prev = state_now;
+  // Initialize GPS
 
-  // state machine switch structure
-  switch (state_now) {
 
-    case INIT:
-      // Make files upon initialization
+  // Initialize State Machine
 
-      // conditional statement for 'pad_****' state - for now, default true
-      if (IRQ(irq_BME, irq_IMU, irq_GPS) == true) {
-        state_now = PAD_IDLE;
 
-        // throw flags for later state conditional statements
-        init.flag = true;
+  // Initialize File Storage  
+  storage.init();
+  storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
+  storage.initFiles();
 
-        // debug monitoring
-        Serial.println("init.flag is true");
-        Serial.println("initialize to pad_idle");
+#if DEBUG
+  test_datalogging(); // not for flight, just for testing
+#endif
+}
 
-      } else {
-        // reinitialize? user input here
-        state_now = PAD_HOLD;
-        Serial.println("initialize to pad_hold");
-      }
-      break;
+void loop()
+{
+  // Run sensors here
 
-    case PAD_IDLE:
-      if (init.flag == true) {
-        state_now = PAD_IDLE;
 
-        // launch ready? looking for user input from loop - for now, default true
-        //if (go_launch == true) {
-        standby.flag = true;
-        //};
+  // Run data logging here
+  // If sensor logging is in high rate mode, log everytime the sensors sample
+  // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
 
-        Serial.println("standby.flag is true");
-        Serial.println("pad_idle to ascent");
-      }
-      break;
 
-    case PAD_HOLD:
-      state_now = PAD_HOLD;
-      init_error.flag = true;
+  // Run state machine here
 
-      Serial.println("init_error.flag is true");
-      Serial.println("pad_hold to init");
-    break;
- 
-    case ASCENT:
-      if (standby.flag == true && launch.flag == true) {
-      state_now = ASCENT;
-      }
 
-      launch.flag = true;
+  // Run other stuff here
+  // example: dumping data from NOR flash to SD cards after FSM landing flag is raised
 
-      //if apogee event statement here
-
-      Serial.println("apogee.flag is true");
-      Serial.println("ascent to descent");
-    break;
-
-    case DESCENT:
-      if (apogee.flag == true) {
-      state_now = DESCENT;
-      }
-      // code for drogues
-      apogee.flag = true;
-      drogues.flag = true;
-
-      Serial.println("drogues.flag is true");
-      Serial.println("descent to landing");
-    break;
- };
-
-/*
-    case DESCENT:
-      if (apogee.flag == true)
-      state_now = ASCENT;
-
-      std::cout << "apogee.flag is " << apogee.flag << "\n";
-      std::cout << "ascent to descent" << "\n\n" ;
-    break;
-
-    case LANDING:
-
-    break;
-
-    case LANDING_IDLE:
-
-    break;
-*/    
-};
-
-void setup() {
-  // initialize digital pins
-
-  //if DEBUG is turned on, intiialize serial connection
-  if(DEBUG) {
-    Serial.begin(115200);
-    Serial.println("Debugging is ON");
-  }
 
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  machine();
 
-  //If debug is enabled, do some printing of messages
-
-  //Let the world know when the state changes
-
+void test_datalogging()
+{
+  // Generate fake data to test storage functionality
+  for(int i = 0; i < 10; i++)
+  {
+    String dataLine;    
+    dataLine += String(i*50000);
+    dataLine += ",";
+    dataLine += String(1000.0*sin(i*2*3.14159*0.005),6); // need to make sure full float data is saved (that's what the 6 is for, allows for 6 digits after decimal place)
+    dataLine += ",";
+    dataLine += String(10.0*sin(i*2*3.14159*0.01) + 30.0,6);
+    dataLine += ",";
+    dataLine += String(10.0*sin(i*2*3.14159*0.1) + 50.0,6);    
+    storage.writeData("BME.csv",dataLine);
+  }
+  storage.dumpData();
 }
