@@ -1,7 +1,15 @@
 #include <Arduino.h>
 #include "Data_Storage.h"
+#include "myBME.h"
+#include "myIMU.h"
+#include "myGPS.h"
+#include "state.hpp"
 
 #define DEBUG false
+
+myBME bme(9);
+myIMU imu;
+myGPS gps;
 
 Data_Storage storage;
 
@@ -13,13 +21,13 @@ void setup()
   delay(5000); // testing delay, not necessary for flight
 
   // Initialize BME
-
+  bme.start(30);
 
   // Initialize IMU
-
+  imu.start(10,100,100);
 
   // Initialize GPS
-
+  gps.start();
 
   // Initialize State Machine
 
