@@ -1,9 +1,10 @@
 #include "myBME.h"
 
 /*!
-    @brief Initializes the sensor with desired sampling rate (10,20,30,40,50,100 Hz)
-            , then calculate a baseline altitude in two seconds
-    @return true if started successfully, false if not 
+    @brief Initializes the sensor with sampling rate,
+            then calculate a baseline altitude in two seconds
+    @param rate desired sample rate in Hz (10,20,30,40,50,100 Hz)
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
 */
 bool myBME::start(int rate)
 {
@@ -42,7 +43,7 @@ bool myBME::start(int rate)
 
 /*!
     @brief BME sensor starts measuring data (temperature, altitude, humidity)
-    @return flag indicating new data from sensor, 1 if data updated, 0 otherwise
+    @return flag indicating new data from sensor, 1 (true) if data updated, 0 (False) otherwise
 */
 bool myBME::getData()
 {
