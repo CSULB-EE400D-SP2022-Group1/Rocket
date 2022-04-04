@@ -28,6 +28,8 @@ class myGPS : public TinyGPSPlus
         float getSpeed();
         float getGPSAltitude();
         float getHDOP();
+        uint32_t getAge();
+
 
 
     private:

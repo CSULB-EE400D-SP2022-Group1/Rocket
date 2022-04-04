@@ -133,3 +133,11 @@ float  myGPS::getGPSAltitude() {
 float  myGPS::getHDOP() {
     return hdop.hdop();
 }
+
+/*!
+    @brief Returns time since last GPS update
+    @return time in milliseconds
+*/
+uint32_t myGPS::getAge() {
+    return location.age();
+}

@@ -252,9 +252,9 @@ bool myBME::detectLaunch()
     Serial.print("baseline altitude: ");
     Serial.println(baselineAltitude);
     Serial.print("launch detect altitude: ");
-    Serial.println(baselineAltitude + .5);
+    Serial.println(baselineAltitude + ABOVE_BASELINE);
 
-    if (recentAverage >= baselineAltitude + .5)
+    if (recentAverage >= baselineAltitude + ABOVE_BASELINE)
     {
         launchDetect = true;
     }
