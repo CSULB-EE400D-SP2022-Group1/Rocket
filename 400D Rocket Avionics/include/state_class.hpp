@@ -1,6 +1,6 @@
 #pragma once
-#include "myBME.cpp"
-
+#include "myBME.h"
+//comment check it out
 enum state_list 
 {
     Init,
