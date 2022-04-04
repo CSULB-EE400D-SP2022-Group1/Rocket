@@ -4,21 +4,21 @@
     @brief initializes IMU, sets frequency of accelerometer and gyrometer,
             and fills data buffer for acceleration (m/s^2) and angular vel. (rad/s)
     @param ICM_CS CS pin for IMU
-    @param accelRate desired accelerometer rate in Hz
-    @param gyroRate desired gyrometer rate in Hz
+    @param accelRate desired accelerometer sampling rate in Hz
+    @param gyroRate desired gyrometer sampling rate in Hz
     @return 1 (true) if initialization is successful, 0 (false) otherwise
 */
-bool myIMU::start(int ICM_CS, int accelRate, int gyroRate)
+bool myIMU::start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate)
 {
-    unsigned status =  begin_SPI(ICM_CS);
+    dataFlag = 0;
 
+    unsigned status =  begin_SPI(ICM_CS);
     elapsedMillis timePastMs;
     elapsedMicros timePastMicros;
     setAccelFrequency(accelRate);
     setGyroFrequency(gyroRate);
     int i = 0;
 
-    
     while (timePastMs <= 2000)
     {
         if (timePastMicros >= 1000000/IMU_FREQ && i <= BUF_SIZE) 
@@ -33,29 +33,40 @@ bool myIMU::start(int ICM_CS, int accelRate, int gyroRate)
             gyroY_buffer[i] = gyro.gyro.y;
             gyroZ_buffer[i] = gyro.gyro.z;
             
-            Serial.println(accX_buffer[i]);
             timePastMicros -= 1000000/IMU_FREQ;
             ++i;
         }
     }
+
+    if (accelRate < gyroRate)
+        highestSensorRate = gyroRate;
+    else if (accelRate > gyroRate)
+        highestSensorRate = accelRate;
+    else
+        highestSensorRate = gyroRate;
+
+    return status;
 }
 
 /*!
     @brief IMU starts measuring data
 */
-void myIMU::getData()
+bool myIMU::getData()
 {
-    getEvent(&accel, &gyro, &temp);
+    if (timeSinceDataRead >= 1000000/highestSensorRate)
+    {
+        getEvent(&accel, &gyro, &temp);
+        timeSinceDataRead -= 1000000/highestSensorRate;
+        dataFlag = 1;
+    }
 
-    thistemp = temp.temperature;
+    return dataFlag;
+}
 
-    accX = accel.acceleration.x;
-    accY = accel.acceleration.y;
-    accZ = accel.acceleration.z;
-
-    gyroX = gyro.gyro.x;
-    gyroY = gyro.gyro.y;
-    gyroZ = gyro.gyro.z;
+bool myIMU::resetDataFlag()
+{
+    dataFlag = 0;
+    return dataFlag;
 }
 
 /*!
@@ -69,37 +80,37 @@ void myIMU::updateBuffers()
     {
         accX_buffer[i] = accX_buffer[i-1];
     }
-    accX_buffer[0] = accX;
+    accX_buffer[0] = accel.acceleration.x;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accY_buffer[i] = accY_buffer[i-1];
     }
-    accY_buffer[0] = accY;
+    accY_buffer[0] = accel.acceleration.y;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accZ_buffer[i] = accZ_buffer[i-1];
     }
-    accZ_buffer[0] = accZ;
+    accZ_buffer[0] = accel.acceleration.z;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         gyroX_buffer[i] = gyroX_buffer[i-1];
     }
-    gyroX_buffer[0] = gyroX;
+    gyroX_buffer[0] = gyro.gyro.x;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         gyroY_buffer[i] = gyroY_buffer[i-1];
     }
-    gyroY_buffer[0] = gyroY;
+    gyroY_buffer[0] = gyro.gyro.y;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
     }
-    gyroZ_buffer[0] = gyroZ;
+    gyroZ_buffer[0] = gyro.gyro.z;
 }
 
 /*!
@@ -180,7 +191,7 @@ void myIMU::setGyroRange(int desiredRange)
 */
 float myIMU::getTemp()
 {
-    return thistemp;
+    return temp.temperature;
 }
 
 /*!
@@ -189,7 +200,7 @@ float myIMU::getTemp()
 */
 float myIMU::getAccelX()
 {
-    return accX;
+    return accel.acceleration.x;
 }
 
 /*!
@@ -198,7 +209,7 @@ float myIMU::getAccelX()
 */
 float myIMU::getAccelY()
 {
-    return accY;
+    return accel.acceleration.y;
 }
 
 /*!
@@ -207,7 +218,7 @@ float myIMU::getAccelY()
 */
 float myIMU::getAccelZ()
 {
-    return accZ;
+    return accel.acceleration.z;
 }
 
 /*!
@@ -216,7 +227,7 @@ float myIMU::getAccelZ()
 */
 float myIMU::getGyroX()
 {
-    return gyroX;
+    return gyro.gyro.x;
 }
 
 /*!
@@ -225,7 +236,7 @@ float myIMU::getGyroX()
 */
 float myIMU::getGyroY()
 {
-    return gyroY;
+    return gyro.gyro.y;
 }
 
 /*!
@@ -234,5 +245,5 @@ float myIMU::getGyroY()
 */
 float myIMU::getGyroZ()
 {
-    return gyroZ;
+    return gyro.gyro.z;
 }
