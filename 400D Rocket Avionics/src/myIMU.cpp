@@ -58,6 +58,7 @@ bool myIMU::getData()
         getEvent(&accel, &gyro, &temp);
         timeSinceDataRead -= 1000000/highestSensorRate;
         dataFlag = 1;
+        updateBuffers();
     }
 
     return dataFlag;
@@ -74,8 +75,6 @@ bool myIMU::resetDataFlag()
 */
 void myIMU::updateBuffers()
 {
-    getData();
-
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accX_buffer[i] = accX_buffer[i-1];

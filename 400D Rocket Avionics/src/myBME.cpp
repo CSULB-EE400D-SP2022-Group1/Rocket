@@ -57,6 +57,7 @@ bool myBME::getData()
         temp = readTemperature();
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
+        updateBuffers();
         
         timeSinceDataRead -= interval;
     }
@@ -109,7 +110,6 @@ float myBME::getHumidity()
 */
 void myBME::updateBuffers()
 {
-
     // shifts data right to make space for new data at index 0
     for (int i = SAMPLE_SIZE - 1; i > 0; --i)
     {
