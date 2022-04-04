@@ -13,8 +13,9 @@ class myIMU : public Adafruit_ICM20649
     public:
         using Adafruit_ICM20649::Adafruit_ICM20649; // credit to Brandon Summers
 
-        bool start(int ICM_CS, int accelRate, int gyroRate);
-        void getData();
+        bool start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate);
+        bool getData();
+        bool resetDataFlag();
         void updateBuffers();
 
         void setAccelFrequency(int desiredRate);
@@ -31,9 +32,9 @@ class myIMU : public Adafruit_ICM20649
         float getGyroZ();
         
     private:
-        float accX, accY, accZ;
-        float gyroX, gyroY, gyroZ;
-        float thistemp;
+        elapsedMicros timeSinceDataRead;       
+        bool dataFlag;
+        uint8_t highestSensorRate;
 
         float accX_buffer[BUF_SIZE] = {0.0};
         float accY_buffer[BUF_SIZE] = {0.0};

@@ -5,15 +5,17 @@
 
 static const int RXPin = 0, TXPin = 1;
 static const uint32_t GPSBaud = 9600;
+static SoftwareSerial ss(RXPin, TXPin);
 
 class myGPS : public TinyGPSPlus
 {
     public:
-        using TinyGPSPlus::TinyGPSPlus; // credit to Brandon Summers
+        //using TinyGPSPlus::TinyGPSPlus; // credit to Brandon Summers
 
-        boolean start();
-        void getData();
-
+        void start();
+        boolean getData();
+        boolean resetDataFlag();
+        
         uint32_t numSatellites();
         float getLang();
         float getLat();
@@ -23,12 +25,12 @@ class myGPS : public TinyGPSPlus
         uint8_t getHour();
         uint8_t getMinute();
         uint8_t getSecond();
-        double getCourse();
         float getSpeed();
         float getGPSAltitude();
         float getHDOP();
 
 
     private:
-        SoftwareSerial ss;
+        bool dataFlag;
+        elapsedMillis timeSinceDataRead;
 };

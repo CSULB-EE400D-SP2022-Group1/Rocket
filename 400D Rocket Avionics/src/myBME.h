@@ -15,22 +15,21 @@ class myBME : public Adafruit_BME280
     public:
         using Adafruit_BME280::Adafruit_BME280; // credit to Brandon Summers
 
-        boolean start(int rate);
-        boolean getData();
-        boolean resetDataFlag();
+        bool start(int rate);
+        bool getData();
+        bool resetDataFlag();
 
-        void averagerInit(int rate);
+        float getAltitude();
+        float getTemp();
+        float getHumidity();
+        
         void updateBuffers();
         int getAvg();
         int getAvgRecent();
         float getRecentData();
 
-        float getAltitude();
-        float getTemp();
-        float getHumidity();
-
         void setFrequency(int rate);
-        boolean detectLaunch();
+        bool detectLaunch();
         
 
     private:
@@ -38,6 +37,7 @@ class myBME : public Adafruit_BME280
         elapsedMicros timeSinceDataRead;       
 
         float temp, altitude, humidity;
+        int recentAverage;
         int frequency; 
         
         float altitude_buffer[SAMPLE_SIZE] = {0.0}; // buffer for altitude
@@ -47,7 +47,7 @@ class myBME : public Adafruit_BME280
         float baselinePressure;                     // baseline for ground lv pressure
         float baselineAltitude;                     // baseline for ground lv altitude
 
-        boolean launchDetect{0};                    // flag for launch detect, init at 0
-        boolean newDataDetect{0};                   // flag for new data detect, init at 0
+        bool launchDetect{0};                    // flag for launch detect, init at 0
+        bool newDataDetect{0};                   // flag for new data detect, init at 0
 
 };

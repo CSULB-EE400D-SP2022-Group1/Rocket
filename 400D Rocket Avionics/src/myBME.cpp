@@ -1,10 +1,11 @@
 #include "myBME.h"
 
 /*!
-    @brief Initializes the sensor, then calculate a baseline altitude in two seconds
+    @brief Initializes the sensor with desired sampling rate
+            , then calculate a baseline altitude in two seconds
     @return true if started successfully, false if not 
 */
-boolean myBME::start(int rate)
+bool myBME::start(int rate)
 {
     unsigned status;
     status = begin();
@@ -31,10 +32,10 @@ boolean myBME::start(int rate)
     }   
 
 
-    Serial.print("Base line pressure(Pa): ");
-    Serial.print(baselinePressure);
-    Serial.print(" | Baseline altitude(m): ");
-    Serial.println(baselineAltitude);
+    // Serial.print("Base line pressure(Pa): ");
+    // Serial.print(baselinePressure);
+    // Serial.print(" | Baseline altitude(m): ");
+    // Serial.println(baselineAltitude);
 
     return status;
 }
@@ -43,7 +44,7 @@ boolean myBME::start(int rate)
     @brief BME sensor starts measuring data (temperature, altitude, humidity)
     @return flag indicating new data from sensor, 1 if data updated, 0 otherwise
 */
-boolean myBME::getData()
+bool myBME::getData()
 {
     if (frequency == 0)
         frequency = 10;
@@ -67,7 +68,7 @@ boolean myBME::getData()
     @brief sets new data flag to false, meaning no new data from BME sensor
     @return 0 (false) flag
 */
-boolean myBME::resetDataFlag()
+bool myBME::resetDataFlag()
 {
     newDataDetect = 0;
     return newDataDetect;
@@ -103,7 +104,7 @@ float myBME::getHumidity()
 }
 
 /*!
-    @brief Fills the buffer array (buffer of 2 seconds, 33hz)
+    @brief Fills the buffer array (buffer of 3 seconds, 33hz)
 */
 void myBME::updateBuffers()
 {
@@ -130,7 +131,7 @@ void myBME::updateBuffers()
 }
 
 /*!
-    @brief Calculates the average of data array
+    @brief Calculates the 3 second average of data buffer
     @return 3 second average, rounded to integer
 */
 int myBME::getAvg()
@@ -142,11 +143,12 @@ int myBME::getAvg()
         sum += altitude_buffer[i];
     }
 
-    return round (sum / SAMPLE_SIZE);
+    recentAverage = round (sum / SAMPLE_SIZE);
+    return recentAverage;
 }
 
 /*!
-    @brief Calculates the average of data array
+    @brief Calculates the 2 second average of data buffer
     @return 2 second average, rounded to integer
 */
 int myBME::getAvgRecent()
@@ -159,6 +161,10 @@ int myBME::getAvgRecent()
     }
 
     return round(sum / RECENT_SIZE);
+}
+
+float myBME::getRecentData() {
+    return altitude_buffer[0];
 }
 
 /*!
@@ -237,14 +243,14 @@ void myBME::setFrequency(int rate)
     @brief Detects if current altitude is 200m above the baseline altitude
     @return 1 (true) if current altitude is 200m above baseline, 0 (false) otherwise
 */
-boolean myBME::detectLaunch()
+bool myBME::detectLaunch()
 {   
-    // Serial.print("baseline altitude: ");
-    // Serial.println(baselineAltitude);
-    // Serial.print("launch detect altitude: ");
-    // Serial.println(baselineAltitude + ABOVE_BASELINE);
+    Serial.print("baseline altitude: ");
+    Serial.println(baselineAltitude);
+    Serial.print("launch detect altitude: ");
+    Serial.println(baselineAltitude + .5);
 
-    if (readAltitude(baselinePressure/100) >= baselineAltitude + ABOVE_BASELINE)
+    if (recentAverage >= baselineAltitude + .5)
     {
         launchDetect = true;
     }

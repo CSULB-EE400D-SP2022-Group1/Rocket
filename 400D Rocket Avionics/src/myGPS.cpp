@@ -1,12 +1,32 @@
 #include "myGPS.h"
 
-boolean myGPS::start() {
-    SoftwareSerial ss(RXPin, TXPin);
+/*!
+    @brief initializes software serial with Baud Rate of 9600
+*/
+void myGPS::start() {
+    ss.begin(9600);
+    dataFlag = 0;
 }
 
-void myGPS::getData() {
+boolean myGPS::getData() {
     while (ss.available() > 0)
+    {
         encode(ss.read());
+    }
+
+    if (timeSinceDataRead >= 1000 && charsProcessed() < 10)
+    {
+        Serial.println(F("No GPS detected: check wiring."));
+        timeSinceDataRead -= 1000;
+    }
+
+    dataFlag = 1;
+    return dataFlag;
+}
+
+boolean myGPS::resetDataFlag() {
+    dataFlag = 0;
+    return dataFlag;
 }
 
 uint32_t myGPS::numSatellites() {
@@ -14,6 +34,7 @@ uint32_t myGPS::numSatellites() {
 }
 
 float myGPS::getLang() {
+    getData();
     return location.lng();
 }
 float  myGPS::getLat() {
