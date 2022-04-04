@@ -1,7 +1,7 @@
 #include "myBME.h"
 
 /*!
-    @brief Initializes the sensor with desired sampling rate
+    @brief Initializes the sensor with desired sampling rate (10,20,30,40,50,100 Hz)
             , then calculate a baseline altitude in two seconds
     @return true if started successfully, false if not 
 */
@@ -163,6 +163,10 @@ int myBME::getAvgRecent()
     return round(sum / RECENT_SIZE);
 }
 
+/*!
+    @brief Gets most recent altitude from buffer
+    @return altitude in m
+*/
 float myBME::getRecentData() {
     return altitude_buffer[0];
 }
