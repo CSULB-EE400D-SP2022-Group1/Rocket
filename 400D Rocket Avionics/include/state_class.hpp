@@ -1,41 +1,51 @@
-enum class state_list 
+#pragma once
+#include "myBME.cpp"
+
+enum state_list 
 {
-    POWER_ON,
-    INIT,
-    PAD_HOLD,
-    PAD_IDLE,
-    ASCENT,
-    DESCENT,
-    LANDING,
-    LANDING_IDLE
+    Init,
+    Pad_Hold,
+    Pad_Idle,
+    Ascent,
+    Descent,
+    Landing,
+    Landing_Idle
 };
 
-enum class transition_list
+enum transition_list
 {
-    POWER_ON_to_INIT,
-    INIT_to_PAD_HOLD,
-    INIT_to_PAD_IDLE,
-    PAD_IDLE_to_ASCENT,
-    ASCENT_to_DESCENT,
-    DESCENT_to_LANDING,
-    LANDING_to_LANDING_IDLE
+    Init_to_Pad_Hold,
+    Init_to_Pad_Idle,
+    Pad_Idle_to_Ascent,
+    Ascent_to_Descent,
+    Descent_to_Landing,
+    Landing_to_Landing_Idle
 };
-
+/*
+  int (myBME::*ptrAvg)() = &myBME::getAvg;
+  int (myBME::*ptrAvgRecent)() = &myBME::getAvgRecent;
+    
+  bool detectLaunch = &myBME::detectLaunch;
+*/
 class State 
 {
     public:
-        void initializeMachine(int start);
+        void initializeMachine(bool sensors);
         char getState();
         char getTransition();
+        bool getTransitionEvent();
 
-        bool getStateChange();      
-        State();
+        char stateIndex = stateNow;
+
+        bool apogee();
+        void machine();
     private:
-        using enum state_list;
-            char stateNow;
-            char stateNext;
+        state_list stateNow;
+        state_list stateNext;
 
-        using enum transition_list;
-            char transitionFlag;
-     
+        transition_list transition;
+
+        bool sensorsGreen = false;
+        
+        bool transitionEvent = false;
 };
