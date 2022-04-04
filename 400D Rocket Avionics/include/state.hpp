@@ -1,19 +1,17 @@
 #ifndef STATE_H
 #define STATE_H
 
+#pragma once
 #include <Arduino.h>
 #include <fstream>
 
-// Set to true to enable serial monitor debugging info
-bool DEBUG[true];  
-
 //*****************************************************************************
 // Interrupt function to pass 'IRQ = true' to machine - Testing purposes only
-bool irq_BME[true];
-bool irq_IMU[true];
-bool irq_GPS[true];
+static bool irq_BME[true];
+static bool irq_IMU[true];
+static bool irq_GPS[true];
 
-bool IRQ (bool BME, bool IMU, bool GPS) {
+static bool IRQ (bool BME, bool IMU, bool GPS) {
   if (BME == true &&
       IMU == true && 
       GPS == true) {
@@ -24,9 +22,6 @@ bool IRQ (bool BME, bool IMU, bool GPS) {
   };
 };
 //*****************************************************************************
-
-// Logging functionality
-std::fstream log_file;
 
 // Build STATES list as char
 enum state_list {
@@ -41,7 +36,7 @@ enum state_list {
 };
 
 // Build flag_list as bool
-struct flag_list {
+static struct flag_list {
   // default flag initializeialization
   bool flag = false;
 } power_on,
@@ -56,9 +51,9 @@ struct flag_list {
   touchdown;
 
 // Build log_list as bool
-struct log_list {
+static struct log_list {
   // default flag initializeialization
-  bool log = true;
+  bool entry = true;
 } power_on_log,
   initialize_log,
   standby_log,
@@ -71,7 +66,6 @@ struct log_list {
 
 
 // State transition variables take STATE list values (enum)
-state_list state_now;
-state_list state_prev;
+static state_list state_now;
 
 #endif
