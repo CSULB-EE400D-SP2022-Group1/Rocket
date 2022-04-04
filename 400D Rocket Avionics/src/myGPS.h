@@ -17,7 +17,7 @@ class myGPS : public TinyGPSPlus
         boolean resetDataFlag();
         
         uint32_t numSatellites();
-        float getLang();
+        float getLng();
         float getLat();
         uint8_t getDay();
         uint8_t getMonth();
