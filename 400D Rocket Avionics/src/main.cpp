@@ -3,7 +3,8 @@
 #include "myBME.h"
 #include "myIMU.h"
 #include "myGPS.h"
-#include "state.hpp"
+#include "State machine\state.cpp"
+#include "state_class.hpp"
 
 #define DEBUG false
 
@@ -30,7 +31,9 @@ void setup()
   gps.start();
 
   // Initialize State Machine
-
+  int (myBME::*ptrAvg)() = &myBME::getAvg;
+  int (myBME::*ptrAvgRecent)() = &myBME::getAvgRecent;
+  bool (myBME::*ptrDetectLaunch)() = &myBME::detectLaunch;
 
   // Initialize File Storage  
   storage.init();
