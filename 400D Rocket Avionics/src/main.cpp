@@ -1,12 +1,8 @@
 #include "Data_Storage.h"
-<<<<<<< Updated upstream
 #include "myBME.h"
 #include "myIMU.h"
 #include "myGPS.h"
 #include "state_class.hpp"
-=======
-//#include "state.hpp"
->>>>>>> Stashed changes
 
 #define DEBUG true
 
