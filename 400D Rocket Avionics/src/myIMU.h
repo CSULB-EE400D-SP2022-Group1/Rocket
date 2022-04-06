@@ -3,17 +3,16 @@
 #include <Adafruit_ICM20X.h>
 #include <Adafruit_ICM20649.h>
 
-const int IMU_FREQ = 100;                      // proposed frequency at which we are logging data
-const int SAMP_SIZE = 3 * IMU_FREQ;          // duration of averager * frequency in Hz
-const int REC_SIZE = 2 * IMU_FREQ;          // duration of averager * frequency in Hz
-const int BUF_SIZE = 2 * IMU_FREQ;
+const int IMU_FREQ = 1099;                          // sampling rate of accelerometer AND gyrometer 
+const int IMU_LOGFREQ = 100;                        // proposed frequency at which we are logging data
+const int BUF_SIZE = 2 * IMU_LOGFREQ;               // duration of buffer (s) * logging frequency (hz)
 
 class myIMU : public Adafruit_ICM20649
 {
     public:
         using Adafruit_ICM20649::Adafruit_ICM20649; // credit to Brandon Summers
 
-        bool start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate);
+        bool start(int ICM_CS);
         bool getData();
         bool resetDataFlag();
         void updateBuffers();
@@ -23,6 +22,7 @@ class myIMU : public Adafruit_ICM20649
         void setAccelRange(int desiredRange);
         void setGyroRange(int desiredRange);
 
+<<<<<<< Updated upstream
         float getTemp();
         float getAccelX();
         float getAccelY();
@@ -33,8 +33,22 @@ class myIMU : public Adafruit_ICM20649
         
     private:
         elapsedMicros timeSinceDataRead;       
+=======
+        float getTemp(int i);
+        float getAccelX(int i);
+        float getAccelY(int i);
+        float getAccelZ(int i);
+        float getGyroX(int i);
+        float getGyroY(int i);
+        float getGyroZ(int i);
+        uint32_t getTime(int i);
+        
+    private:
+        elapsedMicros timeSinceDataRead; 
+        elapsedMicros timeSinceBufferUpdate;      
+        elapsedMicros trueTime;
+>>>>>>> Stashed changes
         bool dataFlag;
-        uint8_t highestSensorRate;
 
         float accX_buffer[BUF_SIZE] = {0.0};
         float accY_buffer[BUF_SIZE] = {0.0};
@@ -44,10 +58,14 @@ class myIMU : public Adafruit_ICM20649
         float gyroY_buffer[BUF_SIZE] = {0.0};
         float gyroZ_buffer[BUF_SIZE] = {0.0};
 
+<<<<<<< Updated upstream
+=======
+        uint32_t timeMicros_buffer[BUF_SIZE] = {0};
+        
+>>>>>>> Stashed changes
         sensors_event_t accel;                
         sensors_event_t gyro;
         sensors_event_t temp;
 };
-
 
 
