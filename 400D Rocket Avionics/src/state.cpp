@@ -75,8 +75,6 @@ bool State::detectApogee ()
 void State::machine() 
 {
 
-  thisBME->getData();
-
   // state machine switch structure
   switch (stateIndex)
   {
