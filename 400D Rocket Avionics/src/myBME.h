@@ -4,10 +4,11 @@
 #include <Arduino.h>
 
 const int ABOVE_BASELINE = 200;                         // meters above baseline for the rocket to be considered launched
-static const int FREQUENCY = 30;                        // proposed frequency at which we are logging data
-static const int SAMPLE_SIZE = 3 * FREQUENCY;           // duration for averaging * frequency in Hz
-static const int RECENT_SIZE = 1 * FREQUENCY;           // duration for averaging * frequency in Hz
-static const int BASELINE_SIZE = 2 *FREQUENCY;          // duration for averaging * frequency in Hz
+const int BME_FREQ = 100;                               // frequency at which BME is reading data
+static const int BME_LOGFREQ = 30;                    // proposed frequency at which we are logging data
+static const int SAMPLE_SIZE = 3 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
+static const int RECENT_SIZE = 1 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
+static const int BASELINE_SIZE = 2 *BME_LOGFREQ;          // duration for averaging * frequency in Hz
 
 class myBME : public Adafruit_BME280
 
@@ -15,14 +16,14 @@ class myBME : public Adafruit_BME280
     public:
         using Adafruit_BME280::Adafruit_BME280; // credit to Brandon Summers
 
-        bool start(int rate);
+        bool start();
         bool getData();
         bool resetDataFlag();
 
-        float getAltitude(int index);
-        float getTemp(int index);
-        float getHumidity(int index);
-        uint64_t getTime(int index);
+        float getAltitude(int i);
+        float getTemp(int i);
+        float getHumidity(int i);
+        uint32_t getTime(int i);
         
         void updateBuffers();
         int getAvg();
@@ -37,6 +38,7 @@ class myBME : public Adafruit_BME280
         // automatically keeps track of time elapsed in microseconds
         elapsedMicros timeSinceDataRead;       
         elapsedMicros trueTime;
+        elapsedMicros timeSinceBufferUpdate;
 
         float temp, altitude, humidity;
         int recentAverage;
@@ -45,7 +47,7 @@ class myBME : public Adafruit_BME280
         float altitude_buffer[SAMPLE_SIZE] = {0.0};         // buffer for altitude (m)
         float temp_buffer[SAMPLE_SIZE] = {0.0};             // buffer for temp (deg C)
         float humidity_buffer[SAMPLE_SIZE] = {0.0};         // buffer for humidity  (%)
-        uint64_t timeMicros_buffer[SAMPLE_SIZE] = {0};      // buffer for time (us)
+        uint32_t timeMicros_buffer[SAMPLE_SIZE] = {0};      // buffer for time (us)
 
         float baselinePressure;                     // baseline for ground lv pressure
         float baselineAltitude;                     // baseline for ground lv altitude

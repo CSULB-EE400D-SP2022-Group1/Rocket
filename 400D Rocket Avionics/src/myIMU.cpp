@@ -1,49 +1,42 @@
 #include "myIMU.h"
 
 /*!
-    @brief initializes IMU, sets frequency of accelerometer and gyrometer,
+    @brief initializes IMU, sets frequency of accelerometer and gyrometer at 1099Hz,
             and fills data buffer for acceleration (m/s^2) and angular vel. (rad/s)
     @param ICM_CS CS pin for IMU
-    @param accelRate desired accelerometer sampling rate in Hz
-    @param gyroRate desired gyrometer sampling rate in Hz
     @return 1 (true) if initialization is successful, 0 (false) otherwise
 */
-bool myIMU::start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate)
+bool myIMU::start(int ICM_CS)
 {
     dataFlag = 0;
 
     unsigned status =  begin_SPI(ICM_CS);
     elapsedMillis timePastMs;
     elapsedMicros timePastMicros;
-    setAccelFrequency(accelRate);
-    setGyroFrequency(gyroRate);
+
+    setAccelFrequency(IMU_FREQ);
+    setGyroFrequency(IMU_FREQ);
+
     int i = 0;
 
     while (timePastMs <= 2000)
     {
-        if (timePastMicros >= 1000000/IMU_FREQ && i <= BUF_SIZE) 
+        if (timePastMicros >= 1000000/IMU_LOGFREQ && i <= BUF_SIZE) 
         {   
             getEvent(&accel, &gyro, &temp);
 
             accX_buffer[i] = accel.acceleration.x;
-            accY_buffer[i] = accel.acceleration.y;
-            accZ_buffer[i] = accel.acceleration.z;
+            accX_buffer[i] = accel.acceleration.x;
+            accX_buffer[i] = accel.acceleration.x;
             
             gyroX_buffer[i] = gyro.gyro.x;
             gyroY_buffer[i] = gyro.gyro.y;
             gyroZ_buffer[i] = gyro.gyro.z;
             
-            timePastMicros -= 1000000/IMU_FREQ;
+            timePastMicros -= 1000000/IMU_LOGFREQ;
             ++i;
         }
     }
-
-    if (accelRate < gyroRate)
-        highestSensorRate = gyroRate;
-    else if (accelRate > gyroRate)
-        highestSensorRate = accelRate;
-    else
-        highestSensorRate = gyroRate;
 
     return status;
 }
@@ -53,14 +46,17 @@ bool myIMU::start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate)
 */
 bool myIMU::getData()
 {
-    if (timeSinceDataRead >= 1000000/highestSensorRate)
+    if (timeSinceDataRead >= 1000000/IMU_FREQ)
     {
         getEvent(&accel, &gyro, &temp);
-        updateBuffers();
-
-        timeSinceDataRead -= 1000000/highestSensorRate;
+        timeSinceDataRead -= 1000000/IMU_FREQ;
 
         dataFlag = 1;
+    }
+    
+    if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
+        updateBuffers();
+        timeSinceBufferUpdate -= 1000000/IMU_LOGFREQ;
     }
 
     return dataFlag;
@@ -77,6 +73,8 @@ bool myIMU::resetDataFlag()
 */
 void myIMU::updateBuffers()
 {
+    getData();
+
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accX_buffer[i] = accX_buffer[i-1];
@@ -112,22 +110,10 @@ void myIMU::updateBuffers()
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
     }
     gyroZ_buffer[0] = gyro.gyro.z;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
-        temp_buffer[i] = temp_buffer[i-1];
-    }
-    temp_buffer[0] = temp.temperature;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
-        timeMicros_buffer[i] = timeMicros_buffer[i-1];
-    }
-    timeMicros_buffer[0] = trueTime;
 }
 
 /*!
-    @brief Sets the accelerometer's frequency in Hz
+    @brief Sets the accelerometer's frequency in Hz (maximum 1125)
 */
 void myIMU::setAccelFrequency(int desiredRate)
 {
@@ -142,7 +128,7 @@ void myIMU::setAccelFrequency(int desiredRate)
 }
 
 /*!
-    @brief Sets the gyrometer's frequency in Hz
+    @brief Sets the gyrometer's frequency in Hz (maximum 1100)
 */
 void myIMU::setGyroFrequency(int desiredRate)
 {
@@ -202,70 +188,70 @@ void myIMU::setGyroRange(int desiredRange)
     @brief Returns data measured from IMU
     @return temperature (deg C)
 */
-float myIMU::getTemp(int index)
+float myIMU::getTemp(int i)
 {
-    return temp_buffer[index];
+    return temp_buffer[i];
 }
 
 /*!
     @brief Returns data measured from IMU
     @return acceleration (m/s^2) in x direction
 */
-float myIMU::getAccelX(int index)
+float myIMU::getAccelX(int i)
 {
-    return accX_buffer[index];
+    return accX_buffer[i];
 }
 
 /*!
-    @brief Returns data measured from IMU
+    @brief returns measured 
     @return acceleration (m/s^2) in y direction
 */
-float myIMU::getAccelY(int index)
+float myIMU::getAccelY(int i)
 {
-    return accY_buffer[index];
+    return accY_buffer[i];
 }
 
 /*!
-    @brief Returns data measured from IMU 
+    @brief returns measured 
     @return acceleration (m/s^2) in z direction
 */
-float myIMU::getAccelZ(int index)
+float myIMU::getAccelZ(int i)
 {
-    return accZ_buffer[index];
+    return accZ_buffer[i];
 }
 
 /*!
-    @brief Returns data measured from IMU
+    @brief returns measured 
     @return angular velocity (rad/s) in x direction
 */
-float myIMU::getGyroX(int index)
+float myIMU::getGyroX(int i)
 {
-    return gyroX_buffer[index];
+    return gyroX_buffer[i];
 }
 
 /*!
-    @brief Returns data measured from IMU
+    @brief returns measured 
     @return angular velocity (rad/s) in y direction
 */
-float myIMU::getGyroY(int index)
+float myIMU::getGyroY(int i)
 {
-    return gyroY_buffer[index];
+    return gyroY_buffer[i];
 }
 
 /*!
-    @brief Returns data measured from IMU 
+    @brief returns measured 
     @return angular velocity (rad/s) in z direction
 */
-float myIMU::getGyroZ(int index)
+float myIMU::getGyroZ(int i)
 {
-    return gyroZ_buffer[index];
+    return gyroZ_buffer[i];
 }
 
 /*!
     @brief Returns time at which IMU measured data 
     @return time (us)
 */
-uint64_t myIMU::getTime(int index)
+uint32_t myIMU::getTime(int i)
 {
-    return timeMicros_buffer[index];
+    return timeMicros_buffer[i];
 }
