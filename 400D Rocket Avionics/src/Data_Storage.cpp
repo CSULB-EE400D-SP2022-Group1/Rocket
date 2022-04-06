@@ -16,17 +16,19 @@ bool Data_Storage::init()
 }
 
 
-bool Data_Storage::initFiles()
+bool Data_Storage::initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3)
 {
-    initFileBME();
-    initFileIMU();
-    initFileGPS();
-    initFileFSM();
+    initFileBME(ptr1);
+    initFileIMU(ptr2);
+    initFileGPS(ptr3);
+    //initFileFSM();
+    return 1;
 }
 
 
-bool Data_Storage::initFileBME()
+bool Data_Storage::initFileBME(myBME* ptr)
 {
+    ptrBME = ptr;
     // Initialize BME280 Data File
     char filename[13] = "BME.csv";
     String data;
@@ -50,8 +52,9 @@ bool Data_Storage::initFileBME()
 }
 
 
-bool Data_Storage::initFileIMU()
+bool Data_Storage::initFileIMU(myIMU* ptr)
 {
+    ptrIMU = ptr;
     // Initialize IMU (ICM20649) Data File
     char filename[13] = "IMU.csv";
     String data;
@@ -83,8 +86,9 @@ bool Data_Storage::initFileIMU()
 }
 
 
-bool Data_Storage::initFileGPS()
+bool Data_Storage::initFileGPS(myGPS* ptr)
 {
+    ptrGPS = ptr;
     // Initialize GPS Data File
     char filename[13] = "GPS.csv";
     String data;
@@ -97,8 +101,6 @@ bool Data_Storage::initFileGPS()
     data += "Altitude (m)"; 
     data += ",";
     data += "Speed (m/s)";
-    data += ",";
-    data += "Course (deg)";
     data += ",";
     data += "Year (UTC)";
     data += ",";
@@ -220,11 +222,15 @@ bool Data_Storage::dumpData()
     SD.remove("IMU.csv");
     SD.remove("GPS.csv");
     SD.remove("FSM.csv");
-
-    dumpFile("BME.csv");
-    dumpFile("IMU.csv");
-    dumpFile("GPS.csv");
-    dumpFile("FSM.csv");
+    
+    char filename1[13] = "BME.csv";
+    dumpFile(filename1);
+    char filename2[13] = "IMU.csv";
+    dumpFile(filename2);
+    char filename3[13] = "GPS.csv";
+    dumpFile(filename3);
+    char filename4[13] = "FSM.csv";
+    dumpFile(filename4);
     
     return 1;
 }
@@ -248,4 +254,81 @@ bool Data_Storage::dumpFile(char filename[13])
     Serial.println("Complete");
 
     return 1;
+}
+
+
+void Data_Storage::logBME()
+{
+    String data;
+    char filename[13] = "BME.csv";
+    data += String(micros());
+    data += ",";
+    data += String(ptrBME->getAltitude());
+    data += ",";
+    data += String(ptrBME->getTemp());
+    data += ",";
+    data += String(ptrBME->getHumidity());
+    writeData(filename,data);
+}
+
+
+void Data_Storage::logIMU()
+{
+    String data;    
+    char filename[13] = "IMU.csv";
+    data += String(micros());
+    data += ",";
+    data += String(ptrIMU->getAccelX());
+    data += ",";
+    data += String(ptrIMU->getAccelY());
+    data += ",";
+    data += String(ptrIMU->getAccelZ());
+    data += ",";
+    data += String(ptrIMU->getGyroX());
+    data += ",";
+    data += String(ptrIMU->getGyroY());
+    data += ",";
+    data += String(ptrIMU->getGyroZ());
+    writeData(filename,data);
+}
+
+
+void Data_Storage::logGPS()
+{
+    String data;    
+    char filename[13] = "GPS.csv";
+    data += String(micros());
+    data += ",";
+    data += String(ptrGPS->getLat());
+    //data += ",";
+    //data += String(ptrGPS->getLong());
+    data += ",";
+    data += String(ptrGPS->getGPSAltitude());
+    data += ",";
+    data += String(ptrGPS->getSpeed());
+    data += ",";
+    data += String(ptrGPS->getYear());
+    data += ",";
+    data += String(ptrGPS->getMonth());
+    data += ",";
+    data += String(ptrGPS->getDay());
+    data += ",";
+    data += String(ptrGPS->getHour());
+    data += ",";
+    data += String(ptrGPS->getMinute());    
+    data += ",";
+    data += String(ptrGPS->getSecond());    
+    //data += ",";
+    //data += String(ptrGPS->getSats());    
+    data += ",";
+    data += String(ptrGPS->getHDOP());    
+    //data += ",";
+    //data += String(ptrGPS->getAge());
+    writeData(filename,data);
+}
+
+
+void Data_Storage::logFSM()
+{
+
 }
