@@ -49,15 +49,8 @@ bool myIMU::getData()
     if (timeSinceDataRead >= 1000000/IMU_FREQ)
     {
         getEvent(&accel, &gyro, &temp);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        timeSinceDataRead -= 1000000/highestSensorRate;
-=======
-=======
->>>>>>> Stashed changes
         timeSinceDataRead -= 1000000/IMU_FREQ;
 
->>>>>>> Stashed changes
         dataFlag = 1;
     }
     
@@ -195,141 +188,60 @@ void myIMU::setGyroRange(int desiredRange)
     @brief Returns data measured from IMU
     @return temperature (deg C)
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getTemp()
-{
-    return temp.temperature;
-=======
 float myIMU::getTemp(int i)
 {
     return temp_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getTemp(int i)
-{
-    return temp_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief Returns data measured from IMU
     @return acceleration (m/s^2) in x direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getAccelX()
-{
-    return accel.acceleration.x;
-=======
 float myIMU::getAccelX(int i)
 {
     return accX_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getAccelX(int i)
-{
-    return accX_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief returns measured 
     @return acceleration (m/s^2) in y direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getAccelY()
-{
-    return accel.acceleration.y;
-=======
 float myIMU::getAccelY(int i)
 {
     return accY_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getAccelY(int i)
-{
-    return accY_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief returns measured 
     @return acceleration (m/s^2) in z direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getAccelZ()
-{
-    return accel.acceleration.z;
-=======
 float myIMU::getAccelZ(int i)
 {
     return accZ_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getAccelZ(int i)
-{
-    return accZ_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief returns measured 
     @return angular velocity (rad/s) in x direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getGyroX()
-{
-    return gyro.gyro.x;
-=======
 float myIMU::getGyroX(int i)
 {
     return gyroX_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getGyroX(int i)
-{
-    return gyroX_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief returns measured 
     @return angular velocity (rad/s) in y direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getGyroY()
-{
-    return gyro.gyro.y;
-=======
 float myIMU::getGyroY(int i)
 {
     return gyroY_buffer[i];
->>>>>>> Stashed changes
-=======
-float myIMU::getGyroY(int i)
-{
-    return gyroY_buffer[i];
->>>>>>> Stashed changes
 }
 
 /*!
     @brief returns measured 
     @return angular velocity (rad/s) in z direction
 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-float myIMU::getGyroZ()
-{
-    return gyro.gyro.z;
-}
-=======
-=======
->>>>>>> Stashed changes
 float myIMU::getGyroZ(int i)
 {
     return gyroZ_buffer[i];
@@ -343,4 +255,3 @@ uint32_t myIMU::getTime(int i)
 {
     return timeMicros_buffer[i];
 }
->>>>>>> Stashed changes

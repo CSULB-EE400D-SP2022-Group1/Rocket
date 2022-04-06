@@ -22,19 +22,6 @@ class myIMU : public Adafruit_ICM20649
         void setAccelRange(int desiredRange);
         void setGyroRange(int desiredRange);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        float getTemp();
-        float getAccelX();
-        float getAccelY();
-        float getAccelZ();
-        float getGyroX();
-        float getGyroY();
-        float getGyroZ();
-        
-    private:
-        elapsedMicros timeSinceDataRead;       
-=======
         float getTemp(int i);
         float getAccelX(int i);
         float getAccelY(int i);
@@ -43,24 +30,11 @@ class myIMU : public Adafruit_ICM20649
         float getGyroY(int i);
         float getGyroZ(int i);
         uint32_t getTime(int i);
-        
+                
     private:
-=======
-        float getTemp(int i);
-        float getAccelX(int i);
-        float getAccelY(int i);
-        float getAccelZ(int i);
-        float getGyroX(int i);
-        float getGyroY(int i);
-        float getGyroZ(int i);
-        uint32_t getTime(int i);
-        
-    private:
->>>>>>> Stashed changes
         elapsedMicros timeSinceDataRead; 
         elapsedMicros timeSinceBufferUpdate;      
         elapsedMicros trueTime;
->>>>>>> Stashed changes
         bool dataFlag;
 
         float accX_buffer[BUF_SIZE] = {0.0};
@@ -70,15 +44,11 @@ class myIMU : public Adafruit_ICM20649
         float gyroX_buffer[BUF_SIZE] = {0.0};
         float gyroY_buffer[BUF_SIZE] = {0.0};
         float gyroZ_buffer[BUF_SIZE] = {0.0};
+        
+        float temp_buffer[BUF_SIZE] = {0.0};
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
         uint32_t timeMicros_buffer[BUF_SIZE] = {0};
         
->>>>>>> Stashed changes
         sensors_event_t accel;                
         sensors_event_t gyro;
         sensors_event_t temp;
