@@ -1,19 +1,21 @@
 #include "state_class.hpp"
-
+/*
 bool sensorsGreen = true;
 bool detectLaunch = true;
 bool detectApogee = true;
 bool criticalAltitude = true;
 bool touchdown = true;
+*/
+#define DEBUG_STATE_MACHINE true
 
-
-void State::initializeMachine(bool sensors)
+void State::initializeMachine(bool sensors, myBME *someBME)
 {
     if (sensors == true)
     {
-        state_list stateNow = static_cast<state_list>(0);
-        transition_list transition = static_cast<transition_list>(0);
+        stateNow = static_cast<state_list>(0);
+        transition = static_cast<transition_list>(0);
         bool sensorsGreen = true;
+        thisBME = someBME;
     }
 }
 
@@ -29,17 +31,59 @@ char State::getTransition()
 
 bool State::getTransitionEvent()
 {
-    return transitionEvent;
+  return transitionEvent;
 }
+
+int State::avgOne ()
+{
+  return thisBME->getAvgRecent();
+}
+
+int State::avgThree ()
+{
+  return thisBME->getAvg();
+}
+
+bool State::detectApogee ()
+{
+  int index = 0;
+  int count = 0;
+
+  while (index < 5)
+  {
+    if (count == 5)
+    {
+      break;
+    }
+    else if (avgOne() < avgThree())
+    {
+      count++;
+      index++;
+      continue;
+    }
+    else
+    {
+      index = 0;
+      continue;
+    }
+  }
+  return true;
+}
+
 
 // the machine
 void State::machine() 
 {
+
+  thisBME->getData();
+
   // state machine switch structure
   switch (stateIndex)
   {
     case Init:
+      #if DEBUG_STATE_MACHINE
       Serial.println("System startup. Init state");     
+      #endif
 
       if (sensorsGreen == true)
       {
@@ -67,7 +111,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (detectLaunch == true)
+      if (thisBME->detectLaunch() == true)
       {
         stateNext = Ascent;
         transition = Pad_Idle_to_Ascent;
@@ -83,7 +127,8 @@ void State::machine()
         // debug out
         Serial.println("Awaiting Launch. Standby in Pad_Idle state");        
       }
-
+      
+    //detectLaunch = true;
     stateIndex = stateNext;
     break;
 
@@ -102,15 +147,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      while (detectApogee == false)
-      {
-        stateNext = Ascent;
-
-        // debug out
-        Serial.println("Rocket is Ascending");        
-      }
-
-      if (detectApogee == true)
+      if (detectApogee() == true)
       {
         stateNext = Descent;
         transition = Ascent_to_Descent;
@@ -119,6 +156,15 @@ void State::machine()
         // debug out
         Serial.println("Apogee detected. Proceeding to Descent state");        
       }
+      else 
+      {
+        stateNext = Ascent;
+
+        // debug out
+        Serial.println("Rocket is Ascending");        
+      }
+      
+    //detectApogee = true;   
     stateIndex = stateNext;
     break;
 
@@ -126,15 +172,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      while (criticalAltitude == false) 
-      {
-        stateNext = Descent;
-
-        // debug out
-        Serial.println("Rocket is Descending");          
-      }
-
-      if (criticalAltitude == true)
+      if (thisBME->getAvgRecent() < 5)
       {
         stateNext = Landing;
         transition = Descent_to_Landing;
@@ -143,7 +181,15 @@ void State::machine()
         // debug out
         Serial.println("Critical Altitude achieved. Proceeding to Landing state");        
       }
+      else
+      {
+        stateNext = Descent;
 
+        // debug out
+        Serial.println("Rocket is Descending");          
+      }
+      
+    //criticalAltitude = true;
     stateIndex = stateNext;
     break;
  
@@ -151,7 +197,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      while (touchdown == false) 
+      if (thisBME->getAvgRecent() > 2)
       {
         stateNext = Landing;
 
@@ -159,7 +205,7 @@ void State::machine()
         Serial.println("Rocket is drifting softly to the Earth");          
       }
 
-      if (touchdown == true)
+      else
       {
         stateNext = Landing_Idle;
         transition = Landing_to_Landing_Idle;
