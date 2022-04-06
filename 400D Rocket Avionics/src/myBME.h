@@ -19,9 +19,10 @@ class myBME : public Adafruit_BME280
         bool getData();
         bool resetDataFlag();
 
-        float getAltitude();
-        float getTemp();
-        float getHumidity();
+        float getAltitude(int index);
+        float getTemp(int index);
+        float getHumidity(int index);
+        uint64_t getTime(int index);
         
         void updateBuffers();
         int getAvg();
@@ -35,15 +36,17 @@ class myBME : public Adafruit_BME280
     private:
         // automatically keeps track of time elapsed in microseconds
         elapsedMicros timeSinceDataRead;       
+        elapsedMicros trueTime;
 
         float temp, altitude, humidity;
         int recentAverage;
         int frequency; 
         
-        float altitude_buffer[SAMPLE_SIZE] = {0.0}; // buffer for altitude
-        float temp_buffer[SAMPLE_SIZE] = {0.0};     // buffer for temp
-        float humidity_buffer[SAMPLE_SIZE] = {0.0}; // buffer for humidity  
-        
+        float altitude_buffer[SAMPLE_SIZE] = {0.0};         // buffer for altitude (m)
+        float temp_buffer[SAMPLE_SIZE] = {0.0};             // buffer for temp (deg C)
+        float humidity_buffer[SAMPLE_SIZE] = {0.0};         // buffer for humidity  (%)
+        uint64_t timeMicros_buffer[SAMPLE_SIZE] = {0};      // buffer for time (us)
+
         float baselinePressure;                     // baseline for ground lv pressure
         float baselineAltitude;                     // baseline for ground lv altitude
 

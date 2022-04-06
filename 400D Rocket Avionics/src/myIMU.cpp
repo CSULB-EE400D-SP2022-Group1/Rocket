@@ -26,8 +26,8 @@ bool myIMU::start(int ICM_CS, uint8_t accelRate, uint8_t gyroRate)
             getEvent(&accel, &gyro, &temp);
 
             accX_buffer[i] = accel.acceleration.x;
-            accX_buffer[i] = accel.acceleration.x;
-            accX_buffer[i] = accel.acceleration.x;
+            accY_buffer[i] = accel.acceleration.y;
+            accZ_buffer[i] = accel.acceleration.z;
             
             gyroX_buffer[i] = gyro.gyro.x;
             gyroY_buffer[i] = gyro.gyro.y;
@@ -55,10 +55,14 @@ bool myIMU::getData()
 {
     if (timeSinceDataRead >= 1000000/highestSensorRate)
     {
+        trueTime;       // in case trueTime is only updated everytime it is called
+
         getEvent(&accel, &gyro, &temp);
-        timeSinceDataRead -= 1000000/highestSensorRate;
-        dataFlag = 1;
         updateBuffers();
+
+        timeSinceDataRead -= 1000000/highestSensorRate;
+
+        dataFlag = 1;
     }
 
     return dataFlag;
@@ -110,6 +114,18 @@ void myIMU::updateBuffers()
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
     }
     gyroZ_buffer[0] = gyro.gyro.z;
+
+    for (int i = BUF_SIZE - 1; i > 0; --i)
+    {
+        temp_buffer[i] = temp_buffer[i-1];
+    }
+    temp_buffer[0] = temp.temperature;
+
+    for (int i = BUF_SIZE - 1; i > 0; --i)
+    {
+        timeMicros_buffer[i] = timeMicros_buffer[i-1];
+    }
+    timeMicros_buffer[0] = trueTime;
 }
 
 /*!
@@ -188,61 +204,70 @@ void myIMU::setGyroRange(int desiredRange)
     @brief Returns data measured from IMU
     @return temperature (deg C)
 */
-float myIMU::getTemp()
+float myIMU::getTemp(int index)
 {
-    return temp.temperature;
+    return temp_buffer[index];
 }
 
 /*!
     @brief Returns data measured from IMU
     @return acceleration (m/s^2) in x direction
 */
-float myIMU::getAccelX()
+float myIMU::getAccelX(int index)
 {
-    return accel.acceleration.x;
+    return accX_buffer[index];
 }
 
 /*!
-    @brief returns measured 
+    @brief Returns data measured from IMU
     @return acceleration (m/s^2) in y direction
 */
-float myIMU::getAccelY()
+float myIMU::getAccelY(int index)
 {
-    return accel.acceleration.y;
+    return accY_buffer[index];
 }
 
 /*!
-    @brief returns measured 
+    @brief Returns data measured from IMU 
     @return acceleration (m/s^2) in z direction
 */
-float myIMU::getAccelZ()
+float myIMU::getAccelZ(int index)
 {
-    return accel.acceleration.z;
+    return accZ_buffer[index];
 }
 
 /*!
-    @brief returns measured 
+    @brief Returns data measured from IMU
     @return angular velocity (rad/s) in x direction
 */
-float myIMU::getGyroX()
+float myIMU::getGyroX(int index)
 {
-    return gyro.gyro.x;
+    return gyroX_buffer[index];
 }
 
 /*!
-    @brief returns measured 
+    @brief Returns data measured from IMU
     @return angular velocity (rad/s) in y direction
 */
-float myIMU::getGyroY()
+float myIMU::getGyroY(int index)
 {
-    return gyro.gyro.y;
+    return gyroY_buffer[index];
 }
 
 /*!
-    @brief returns measured 
+    @brief Returns data measured from IMU 
     @return angular velocity (rad/s) in z direction
 */
-float myIMU::getGyroZ()
+float myIMU::getGyroZ(int index)
 {
-    return gyro.gyro.z;
+    return gyroZ_buffer[index];
+}
+
+/*!
+    @brief Returns time at which IMU measured data 
+    @return time (us)
+*/
+uint64_t myIMU::getTime(int index)
+{
+    return timeMicros_buffer[index];
 }
