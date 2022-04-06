@@ -54,14 +54,15 @@ bool myBME::getData()
 
     if (timeSinceDataRead >= interval)
     {
+        trueTime;       // in case trueTime is only updated everytime it is called
         temp = readTemperature();
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
         updateBuffers();
-        
+
         timeSinceDataRead -= interval;
     }
-
+    
     newDataDetect = 1;
     return newDataDetect;
 }
@@ -81,18 +82,18 @@ bool myBME::resetDataFlag()
     @brief Returns data measured from BME
     @return temperature (deg C)
 */
-float myBME::getTemp()
+float myBME::getTemp(int index)
 {
-    return temp;
+    return temp_buffer[index];
 }
 
 /*!
     @brief Returns data measured from BME
     @return altitude (m)
 */
-float myBME::getAltitude()
+float myBME::getAltitude(int index)
 {
-    return altitude;
+    return altitude_buffer[index];
 }
 
 
@@ -100,9 +101,18 @@ float myBME::getAltitude()
     @brief Returns data measured from BME
     @return humidity (%)
 */
-float myBME::getHumidity()
+float myBME::getHumidity(int index)
 {
-    return humidity;
+    return humidity_buffer[index];
+}
+
+/*!
+    @brief Returns time at which BME measured data 
+    @return time (us)
+*/
+uint64_t myBME::getTime(int index)
+{
+    return timeMicros_buffer[index];
 }
 
 /*!
@@ -129,6 +139,13 @@ void myBME::updateBuffers()
         humidity_buffer[i] = humidity_buffer[i-1]; 
     }
     humidity_buffer[0] = humidity; 
+
+    for (int i = SAMPLE_SIZE - 1; i > 0; --i)
+    {
+        timeMicros_buffer[i] = timeMicros_buffer[i-1];
+    }
+    timeMicros_buffer[0] = trueTime;
+
 }
 
 /*!

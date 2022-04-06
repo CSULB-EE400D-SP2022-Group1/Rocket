@@ -23,16 +23,18 @@ class myIMU : public Adafruit_ICM20649
         void setAccelRange(int desiredRange);
         void setGyroRange(int desiredRange);
 
-        float getTemp();
-        float getAccelX();
-        float getAccelY();
-        float getAccelZ();
-        float getGyroX();
-        float getGyroY();
-        float getGyroZ();
+        float getTemp(int index);
+        float getAccelX(int index);
+        float getAccelY(int index);
+        float getAccelZ(int index);
+        float getGyroX(int index);
+        float getGyroY(int index);
+        float getGyroZ(int index);
+        uint64_t getTime(int index);
         
     private:
         elapsedMicros timeSinceDataRead;       
+        elapsedMicros trueTime;
         bool dataFlag;
         uint8_t highestSensorRate;
 
@@ -43,7 +45,11 @@ class myIMU : public Adafruit_ICM20649
         float gyroX_buffer[BUF_SIZE] = {0.0};
         float gyroY_buffer[BUF_SIZE] = {0.0};
         float gyroZ_buffer[BUF_SIZE] = {0.0};
+    
+        float temp_buffer[BUF_SIZE] = {0.0};
 
+        uint64_t timeMicros_buffer[BUF_SIZE] = {0};
+        
         sensors_event_t accel;                
         sensors_event_t gyro;
         sensors_event_t temp;
