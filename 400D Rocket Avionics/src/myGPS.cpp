@@ -19,12 +19,6 @@ boolean myGPS::getData() {
             dataFlag = 1;
     }
 
-    if (timeSinceDataRead >= 1000 && charsProcessed() < 10)
-    {
-        Serial.println(F("No GPS detected: check wiring."));
-        timeSinceDataRead -= 1000;
-    }
-
     return dataFlag;
 }
 
