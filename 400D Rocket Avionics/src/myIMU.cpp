@@ -55,8 +55,6 @@ bool myIMU::getData()
 {
     if (timeSinceDataRead >= 1000000/highestSensorRate)
     {
-        trueTime;       // in case trueTime is only updated everytime it is called
-
         getEvent(&accel, &gyro, &temp);
         updateBuffers();
 

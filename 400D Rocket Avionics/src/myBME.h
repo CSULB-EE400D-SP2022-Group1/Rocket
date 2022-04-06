@@ -4,9 +4,9 @@
 #include <Arduino.h>
 
 const int ABOVE_BASELINE = 200;                         // meters above baseline for the rocket to be considered launched
-static const int FREQUENCY = 33;                        // proposed frequency at which we are logging data
+static const int FREQUENCY = 30;                        // proposed frequency at which we are logging data
 static const int SAMPLE_SIZE = 3 * FREQUENCY;           // duration for averaging * frequency in Hz
-static const int RECENT_SIZE = 2 * FREQUENCY;           // duration for averaging * frequency in Hz
+static const int RECENT_SIZE = 1 * FREQUENCY;           // duration for averaging * frequency in Hz
 static const int BASELINE_SIZE = 2 *FREQUENCY;          // duration for averaging * frequency in Hz
 
 class myBME : public Adafruit_BME280

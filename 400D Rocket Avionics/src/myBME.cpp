@@ -54,7 +54,6 @@ bool myBME::getData()
 
     if (timeSinceDataRead >= interval)
     {
-        trueTime;       // in case trueTime is only updated everytime it is called
         temp = readTemperature();
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
