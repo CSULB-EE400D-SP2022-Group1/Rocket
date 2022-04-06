@@ -172,7 +172,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (thisBME->getAltitude() < 5)
+      if (thisBME->getAvgRecent() < 5)
       {
         stateNext = Landing;
         transition = Descent_to_Landing;
@@ -197,7 +197,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (thisBME->getAltitude() > 2)
+      if (thisBME->getAvgRecent() > 2)
       {
         stateNext = Landing;
 
