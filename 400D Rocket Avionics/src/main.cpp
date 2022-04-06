@@ -1,11 +1,10 @@
-#include <Arduino.h>
 #include "Data_Storage.h"
 #include "myBME.h"
 #include "myIMU.h"
 #include "myGPS.h"
 #include "state.cpp"
 
-#define DEBUG false
+#define DEBUG true
 
 myBME bme(9);
 myIMU imu;
@@ -18,7 +17,7 @@ void test_datalogging();
 void setup()
 {
   Serial.begin(1000000); // initialize fast serial comms
-  delay(5000); // testing delay, not necessary for flight
+  delay(3000); // testing delay, not necessary for flight
 
   // Initialize BME
   bme.start(30);
@@ -37,15 +36,14 @@ void setup()
   // Initialize File Storage  
   storage.init();
   storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
-  storage.initFiles();
-
-#if DEBUG
-  test_datalogging(); // not for flight, just for testing
-#endif
+  storage.initFiles(&bme,&imu,&gps);
 }
 
 void loop()
 {
+#if DEBUG
+  test_datalogging(); // not for flight, just for testing
+#endif
   // Run sensors here
 
 
@@ -66,18 +64,19 @@ void loop()
 
 void test_datalogging()
 {
-  // Generate fake data to test storage functionality
   for(int i = 0; i < 10; i++)
   {
-    String dataLine;    
-    dataLine += String(i*50000);
-    dataLine += ",";
-    dataLine += String(1000.0*sin(i*2*3.14159*0.005),6); // need to make sure full float data is saved (that's what the 6 is for, allows for 6 digits after decimal place)
-    dataLine += ",";
-    dataLine += String(10.0*sin(i*2*3.14159*0.01) + 30.0,6);
-    dataLine += ",";
-    dataLine += String(10.0*sin(i*2*3.14159*0.1) + 50.0,6);    
-    storage.writeData("BME.csv",dataLine);
+    bme.getData();
+    imu.getData();
+    gps.getData();
+
+    storage.logBME();
+    storage.logIMU();
+    storage.logGPS();
+
+    delay(1000);
   }
   storage.dumpData();
+
+  while(1);
 }
