@@ -5,16 +5,22 @@
 
 const int ABOVE_BASELINE = 200;                         // meters above baseline for the rocket to be considered launched
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 static const int FREQUENCY = 33;                        // proposed frequency at which we are logging data
 static const int SAMPLE_SIZE = 3 * FREQUENCY;           // duration for averaging * frequency in Hz
 static const int RECENT_SIZE = 2 * FREQUENCY;           // duration for averaging * frequency in Hz
 static const int BASELINE_SIZE = 2 *FREQUENCY;          // duration for averaging * frequency in Hz
 =======
+=======
+>>>>>>> Stashed changes
 const int BME_FREQ = 100;                               // frequency at which BME is reading data
 static const int BME_LOGFREQ = 30;                    // proposed frequency at which we are logging data
 static const int SAMPLE_SIZE = 3 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
 static const int RECENT_SIZE = 1 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
 static const int BASELINE_SIZE = 2 *BME_LOGFREQ;          // duration for averaging * frequency in Hz
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 class myBME : public Adafruit_BME280
@@ -28,14 +34,20 @@ class myBME : public Adafruit_BME280
         bool resetDataFlag();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         float getAltitude();
         float getTemp();
         float getHumidity();
 =======
+=======
+>>>>>>> Stashed changes
         float getAltitude(int i);
         float getTemp(int i);
         float getHumidity(int i);
         uint32_t getTime(int i);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         
         void updateBuffers();
@@ -54,6 +66,9 @@ class myBME : public Adafruit_BME280
 =======
         elapsedMicros trueTime;
         elapsedMicros timeSinceBufferUpdate;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
         float temp, altitude, humidity;

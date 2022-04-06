@@ -2,10 +2,13 @@
 
 /*!
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     @brief Initializes the sensor with desired sampling rate
             , then calculate a baseline altitude in two seconds
     @return true if started successfully, false if not 
 =======
+=======
+>>>>>>> Stashed changes
     @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
     @return 1 (true) if initialized successfully, 0 (false) otherwise
 >>>>>>> Stashed changes
@@ -58,11 +61,21 @@ bool myBME::getData()
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
         timeSinceDataRead -= interval;
 =======
 
         timeSinceDataRead -= 1000000/BME_FREQ;
+=======
+
+        timeSinceDataRead -= 1000000/BME_FREQ;
+    }
+
+    if (timeSinceBufferUpdate >= 1000000/BME_LOGFREQ) {
+        updateBuffers();
+        timeSinceBufferUpdate -= 1000000/BME_LOGFREQ;
+>>>>>>> Stashed changes
     }
 
     if (timeSinceBufferUpdate >= 1000000/BME_LOGFREQ) {
@@ -91,9 +104,15 @@ bool myBME::resetDataFlag()
     @return temperature (deg C)
 */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 float myBME::getTemp()
 {
     return temp;
+=======
+float myBME::getTemp(int i)
+{
+    return temp_buffer[i];
+>>>>>>> Stashed changes
 =======
 float myBME::getTemp(int i)
 {
@@ -106,9 +125,15 @@ float myBME::getTemp(int i)
     @return altitude (m)
 */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 float myBME::getAltitude()
 {
     return altitude;
+=======
+float myBME::getAltitude(int i)
+{
+    return altitude_buffer[i];
+>>>>>>> Stashed changes
 =======
 float myBME::getAltitude(int i)
 {
@@ -122,10 +147,13 @@ float myBME::getAltitude(int i)
     @return humidity (%)
 */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 float myBME::getHumidity()
 {
     return humidity;
 =======
+=======
+>>>>>>> Stashed changes
 float myBME::getHumidity(int i)
 {
     return humidity_buffer[i];
@@ -138,6 +166,9 @@ float myBME::getHumidity(int i)
 uint32_t myBME::getTime(int i)
 {
     return timeMicros_buffer[i];
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
