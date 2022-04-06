@@ -3,7 +3,7 @@
 #include "myBME.h"
 #include "myIMU.h"
 #include "myGPS.h"
-#include "state_class.hpp"
+#include "state.cpp"
 
 #define DEBUG false
 
