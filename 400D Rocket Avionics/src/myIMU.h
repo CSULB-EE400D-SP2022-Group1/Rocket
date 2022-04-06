@@ -30,7 +30,7 @@ class myIMU : public Adafruit_ICM20649
         float getGyroX(int index);
         float getGyroY(int index);
         float getGyroZ(int index);
-        uint64_t getTime(int index);
+        uint32_t getTime(int index);
         
     private:
         elapsedMicros timeSinceDataRead;       
@@ -48,7 +48,7 @@ class myIMU : public Adafruit_ICM20649
     
         float temp_buffer[BUF_SIZE] = {0.0};
 
-        uint64_t timeMicros_buffer[BUF_SIZE] = {0};
+        uint32_t timeMicros_buffer[BUF_SIZE] = {0};
         
         sensors_event_t accel;                
         sensors_event_t gyro;

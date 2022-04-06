@@ -109,7 +109,7 @@ float myBME::getHumidity(int index)
     @brief Returns time at which BME measured data 
     @return time (us)
 */
-uint64_t myBME::getTime(int index)
+uint32_t myBME::getTime(int index)
 {
     return timeMicros_buffer[index];
 }

@@ -70,9 +70,7 @@ bool Data_Storage::initFileIMU(myIMU* ptr)
     data += ",";
     data += "Y Gyro (rad/s)";
     data += ",";
-    data += "Z Gyro (rad/s)";
-    data += ",";
-    data += "Temperature (C)";     
+    data += "Z Gyro (rad/s)";   
 
     bool createdFile = writeData(filename,data);
     
@@ -257,17 +255,37 @@ bool Data_Storage::dumpFile(char filename[13])
 }
 
 
+void Data_Storage::runLogs()
+{
+    if(millis() >= lastLog + 1000) // if it's been 1 second since last log
+    {
+        lastLog = millis();
+        logBME();
+        logIMU();
+        logGPS();
+    }
+}
+
+
 void Data_Storage::logBME()
 {
     String data;
     char filename[13] = "BME.csv";
-    data += String(micros());
-    data += ",";
-    data += String(ptrBME->getAltitude());
-    data += ",";
-    data += String(ptrBME->getTemp());
-    data += ",";
-    data += String(ptrBME->getHumidity());
+
+    for(int i = 0; i < bme_update_frequency; i++)
+    {
+        data += String(ptrBME->getTime(i));
+        data += ",";
+        data += String(ptrBME->getAltitude(i));
+        data += ",";
+        data += String(ptrBME->getTemp(i));
+        data += ",";
+        data += String(ptrBME->getHumidity(i));
+        if(i < bme_update_frequency - 1)
+        {
+            data += "\n";
+        }
+    }
     writeData(filename,data);
 }
 
@@ -276,19 +294,27 @@ void Data_Storage::logIMU()
 {
     String data;    
     char filename[13] = "IMU.csv";
-    data += String(micros());
-    data += ",";
-    data += String(ptrIMU->getAccelX());
-    data += ",";
-    data += String(ptrIMU->getAccelY());
-    data += ",";
-    data += String(ptrIMU->getAccelZ());
-    data += ",";
-    data += String(ptrIMU->getGyroX());
-    data += ",";
-    data += String(ptrIMU->getGyroY());
-    data += ",";
-    data += String(ptrIMU->getGyroZ());
+    
+    for(int i = 0; i < imu_update_frequency; i++)
+    {
+        data += String(ptrIMU->getTime(i));
+        data += ",";
+        data += String(ptrIMU->getAccelX(i));
+        data += ",";
+        data += String(ptrIMU->getAccelY(i));
+        data += ",";
+        data += String(ptrIMU->getAccelZ(i));
+        data += ",";
+        data += String(ptrIMU->getGyroX(i));
+        data += ",";
+        data += String(ptrIMU->getGyroY(i));
+        data += ",";
+        data += String(ptrIMU->getGyroZ(i));
+        if(i < imu_update_frequency - 1)
+        {
+            data += "\n";
+        }
+    }
     writeData(filename,data);
 }
 
@@ -297,11 +323,12 @@ void Data_Storage::logGPS()
 {
     String data;    
     char filename[13] = "GPS.csv";
-    data += String(micros());
+    
+    data += String(micros()); // equivalent of get time
     data += ",";
     data += String(ptrGPS->getLat());
-    //data += ",";
-    //data += String(ptrGPS->getLong());
+    data += ",";
+    data += String(ptrGPS->getLng());
     data += ",";
     data += String(ptrGPS->getGPSAltitude());
     data += ",";
@@ -318,17 +345,17 @@ void Data_Storage::logGPS()
     data += String(ptrGPS->getMinute());    
     data += ",";
     data += String(ptrGPS->getSecond());    
-    //data += ",";
-    //data += String(ptrGPS->getSats());    
+    data += ",";
+    data += String(ptrGPS->numSatellites());    
     data += ",";
     data += String(ptrGPS->getHDOP());    
-    //data += ",";
-    //data += String(ptrGPS->getAge());
+    data += ",";
+    data += String(ptrGPS->getAge());
     writeData(filename,data);
 }
 
 
 void Data_Storage::logFSM()
 {
-
+    // need to fill out once state machine code is done
 }

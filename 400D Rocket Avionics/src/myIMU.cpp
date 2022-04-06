@@ -265,7 +265,7 @@ float myIMU::getGyroZ(int index)
     @brief Returns time at which IMU measured data 
     @return time (us)
 */
-uint64_t myIMU::getTime(int index)
+uint32_t myIMU::getTime(int index)
 {
     return timeMicros_buffer[index];
 }
