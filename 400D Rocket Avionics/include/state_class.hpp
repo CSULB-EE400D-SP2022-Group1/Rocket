@@ -21,31 +21,31 @@ enum transition_list
     Descent_to_Landing,
     Landing_to_Landing_Idle
 };
-/*
-  int (myBME::*ptrAvg)() = &myBME::getAvg;
-  int (myBME::*ptrAvgRecent)() = &myBME::getAvgRecent;
-    
-  bool detectLaunch = &myBME::detectLaunch;
-*/
+
 class State 
 {
     public:
-        void initializeMachine(bool sensors);
+        void initializeMachine(bool sensors, myBME *someBME);
         char getState();
         char getTransition();
         bool getTransitionEvent();
 
-        char stateIndex = stateNow;
+        bool detectApogee ();
+        int avgOne ();
+        int avgThree ();
 
-        bool apogee();
-        void machine();
+        void machine ();
+
     private:
+        char stateIndex = stateNow;
+        
         state_list stateNow;
         state_list stateNext;
 
         transition_list transition;
 
-        bool sensorsGreen = false;
-        
+        bool sensorsGreen = false;        
         bool transitionEvent = false;
+
+        myBME *thisBME;
 };
