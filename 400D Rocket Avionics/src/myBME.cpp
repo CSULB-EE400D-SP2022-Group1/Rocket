@@ -146,7 +146,7 @@ void myBME::updateBuffers()
     {
         timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
-    timeMicros_buffer[0] = trueTime; 
+    timeMicros_buffer[0] = micros(); 
     
 }
 
@@ -264,7 +264,7 @@ bool myBME::detectLaunch()
     // Serial.print("launch detect altitude: ");
     // Serial.println(baselineAltitude + ABOVE_BASELINE);
 
-    if (recentAverage >= baselineAltitude + ABOVE_BASELINE)
+    if (getAvgRecent() >= baselineAltitude + ABOVE_BASELINE)
     {
         launchDetect = true;
     }

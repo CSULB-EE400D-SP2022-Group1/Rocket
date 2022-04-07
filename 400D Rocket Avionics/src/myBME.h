@@ -38,7 +38,6 @@ class myBME : public Adafruit_BME280
     private:
         // automatically keeps track of time elapsed in microseconds
         elapsedMicros timeSinceDataRead;       
-        elapsedMicros trueTime;
         elapsedMicros timeSinceBufferUpdate;
         uint32_t newBufferDataCount{0};
 

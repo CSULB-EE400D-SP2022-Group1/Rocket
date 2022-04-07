@@ -128,7 +128,7 @@ void myIMU::updateBuffers()
     {
         timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
-    timeMicros_buffer[0] = trueTime; 
+    timeMicros_buffer[0] = micros(); 
 }
 
 /*!
