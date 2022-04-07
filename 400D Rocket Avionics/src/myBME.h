@@ -3,11 +3,12 @@
 #include <Adafruit_BME280.h>
 #include <Arduino.h>
 
-const int ABOVE_BASELINE = 200;                         // meters above baseline for the rocket to be considered launched
-static const int FREQUENCY = 30;                        // proposed frequency at which we are logging data
-static const int SAMPLE_SIZE = 3 * FREQUENCY;           // duration for averaging * frequency in Hz
-static const int RECENT_SIZE = 1 * FREQUENCY;           // duration for averaging * frequency in Hz
-static const int BASELINE_SIZE = 2 *FREQUENCY;          // duration for averaging * frequency in Hz
+const int ABOVE_BASELINE = 200;                           // meters above baseline for the rocket to be considered launched
+const int BME_FREQ = 10;                                 // frequency at which BME is reading data
+static const int BME_LOGFREQ = 37;                        // desired buffer freq = 30, offset by 7 
+static const int SAMPLE_SIZE = 3 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
+static const int RECENT_SIZE = 1 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
+static const int BASELINE_SIZE = 2 *BME_LOGFREQ;          // duration for averaging * frequency in Hz
 
 class myBME : public Adafruit_BME280
 
@@ -15,14 +16,14 @@ class myBME : public Adafruit_BME280
     public:
         using Adafruit_BME280::Adafruit_BME280; // credit to Brandon Summers
 
-        bool start(int rate);
+        bool start();
         bool getData();
         bool resetDataFlag();
 
-        float getAltitude(int index);
-        float getTemp(int index);
-        float getHumidity(int index);
-        uint32_t getTime(int index);
+        float getAltitude(int i);
+        float getTemp(int i);
+        float getHumidity(int i);
+        uint32_t getTime(int i);
         
         void updateBuffers();
         int getAvg();
@@ -32,11 +33,11 @@ class myBME : public Adafruit_BME280
         void setFrequency(int rate);
         bool detectLaunch();
         
-
     private:
         // automatically keeps track of time elapsed in microseconds
         elapsedMicros timeSinceDataRead;       
         elapsedMicros trueTime;
+        elapsedMicros timeSinceBufferUpdate;
 
         float temp, altitude, humidity;
         int recentAverage;

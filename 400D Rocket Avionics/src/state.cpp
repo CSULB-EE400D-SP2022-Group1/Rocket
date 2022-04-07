@@ -88,6 +88,8 @@ void State::machine()
 {
   elapsedMillis();
 
+  thisBME->getData();
+
   // state machine switch structure
   switch (stateIndex)
   {

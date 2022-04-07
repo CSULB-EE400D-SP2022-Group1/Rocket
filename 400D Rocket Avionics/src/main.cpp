@@ -4,104 +4,79 @@
 #include "myGPS.h"
 #include "state_class.hpp"
 
-#define DEBUG false
-
-uint64_t bme_last_update = 0;
-uint64_t imu_last_update = 0;
-uint64_t gps_last_update = 0;
+#define DEBUG true
 
 myBME bme(9);
 myIMU imu;
 myGPS gps;
 
-State fsm;
-
 Data_Storage storage;
 
-void initSensors();
-void initState();
-void initStorage();
-
-void runSensors();
-void runState();
-void runStorage();
+void test_datalogging();
 
 void setup()
 {
   Serial.begin(1000000); // initialize fast serial comms
-  delay(1000); // testing delay, not necessary for flight
+  delay(3000); // testing delay, not necessary for flight
 
-  initSensors();
-  initState();
-  initStorage();
-}
-
-
-void loop()
-{ 
-  runSensors();
-  runState();
-  runStorage();
-}
-
-
-void initSensors()
-{
   // Initialize BME
-  bme.start(bme_update_frequency);
+  bme.start(30);
 
   // Initialize IMU
-  imu.start(10,imu_update_frequency,imu_update_frequency);
+  imu.start(10,100,100);
 
   // Initialize GPS
   gps.start();
-}
 
-
-void initState()
-{
   // Initialize State Machine
-  fsm.initializeMachine(true,&bme); // pass a true value if sensors are good
-}
+  int (myBME::*ptrAvg)() = &myBME::getAvg;
+  int (myBME::*ptrAvgRecent)() = &myBME::getAvgRecent;
+  bool (myBME::*ptrDetectLaunch)() = &myBME::detectLaunch;
 
-
-void initStorage()
-{
   // Initialize File Storage  
   storage.init();
   storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
   storage.initFiles(&bme,&imu,&gps);
-
-  while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
 }
 
-
-void runSensors()
+void loop()
 {
-  // RUN SENSORS
-  bme.getData();
-  imu.getData();
-  gps.getData();
-}
+#if DEBUG
+  test_datalogging(); // not for flight, just for testing
+#endif
+  // Run sensors here
 
 
-void runState()
-{
-  // RUN FINITE STATE MACHINE
-  fsm.machine();  
-}
-
-
-void runStorage()
-{
-  // RUN DATA LOGGING
+  // Run data logging here
   // If sensor logging is in high rate mode, log everytime the sensors sample
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
-  storage.runLogs();
-  // Dump data to SD Card post landing confirmation
-  if(millis() >= 70*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+
+
+  // Run state machine here
+
+
+  // Run other stuff here
+  // example: dumping data from NOR flash to SD cards after FSM landing flag is raised
+
+
+}
+
+
+void test_datalogging()
+{
+  for(int i = 0; i < 10; i++)
   {
-    storage.dumpData();
-    while(1);
+    bme.getData();
+    imu.getData();
+    gps.getData();
+
+    storage.logBME();
+    storage.logIMU();
+    storage.logGPS();
+
+    delay(1000);
   }
+  storage.dumpData();
+
+  while(1);
 }

@@ -1,16 +1,14 @@
 #include "myBME.h"
 
 /*!
-    @brief Initializes the sensor with sampling rate,
-            then calculate a baseline altitude in two seconds
-    @param rate desired sample rate in Hz (10,20,30,40,50,100 Hz)
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
     @return 1 (true) if initialized successfully, 0 (false) otherwise
 */
-bool myBME::start(int rate)
+bool myBME::start()
 {
     unsigned status;
     status = begin();
-    setFrequency(rate);
+    setFrequency(BME_FREQ);
 
     if (status) {
         int i = 1;
@@ -20,18 +18,20 @@ bool myBME::start(int rate)
 
         while (timePastMs <= 2000)
         {
-            if (timePastMicros >= 1000000/FREQUENCY && i <= BASELINE_SIZE) 
+            if (timePastMicros >= 1000000/BME_LOGFREQ && i <= BASELINE_SIZE) 
             {
                 sum += readPressure();
-                timePastMicros -= 1000000/FREQUENCY;
+                timePastMicros -= 1000000/BME_LOGFREQ;
                 ++i;
             }
         }
 
         baselinePressure = sum / BASELINE_SIZE;
         baselineAltitude = readAltitude(baselinePressure/100);
-    }   
 
+        timeSinceDataRead = 0;          //reset because these will be non zero by the time getData() is called
+        timeSinceBufferUpdate = 0;      //reset because these will be non zero by the time getData() is called
+    }   
 
     // Serial.print("Base line pressure(Pa): ");
     // Serial.print(baselinePressure);
@@ -43,26 +43,26 @@ bool myBME::start(int rate)
 
 /*!
     @brief BME sensor starts measuring data (temperature, altitude, humidity)
-    @return flag indicating new data from sensor, 1 (true) if data updated, 0 (False) otherwise
+    @return flag indicating new data from sensor, 1 if data updated, 0 otherwise
 */
 bool myBME::getData()
-{
-    if (frequency == 0)
-        frequency = 10;
-    
-    unsigned long interval = 1e6/frequency; // time for one data cycle of sensor (us)
+{    
 
-    if (timeSinceDataRead >= interval)
+    if (timeSinceDataRead >= 1000000/(BME_FREQ+11))
     {
         temp = readTemperature();
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
-        updateBuffers();
 
-        timeSinceDataRead -= interval;
+        if (timeSinceBufferUpdate >= 1000000/BME_LOGFREQ) {
+            updateBuffers();
+            timeSinceBufferUpdate -= 1000000/BME_LOGFREQ;
+        }
+
+        timeSinceDataRead -= 1000000/(BME_FREQ+11);
+        newDataDetect = 1;
     }
-    
-    newDataDetect = 1;
+
     return newDataDetect;
 }
 
@@ -81,18 +81,18 @@ bool myBME::resetDataFlag()
     @brief Returns data measured from BME
     @return temperature (deg C)
 */
-float myBME::getTemp(int index)
+float myBME::getTemp(int i)
 {
-    return temp_buffer[index];
+    return temp_buffer[i];
 }
 
 /*!
     @brief Returns data measured from BME
     @return altitude (m)
 */
-float myBME::getAltitude(int index)
+float myBME::getAltitude(int i)
 {
-    return altitude_buffer[index];
+    return altitude_buffer[i];
 }
 
 
@@ -100,25 +100,26 @@ float myBME::getAltitude(int index)
     @brief Returns data measured from BME
     @return humidity (%)
 */
-float myBME::getHumidity(int index)
+float myBME::getHumidity(int i)
 {
-    return humidity_buffer[index];
+    return humidity_buffer[i];
 }
 
 /*!
     @brief Returns time at which BME measured data 
     @return time (us)
 */
-uint32_t myBME::getTime(int index)
+uint32_t myBME::getTime(int i)
 {
-    return timeMicros_buffer[index];
+    return timeMicros_buffer[i];
 }
 
 /*!
-    @brief Fills the buffer array (buffer of 3 seconds, 33hz)
+    @brief Updates buffers for altitude, temp, humidity, and time
 */
 void myBME::updateBuffers()
 {
+
     // shifts data right to make space for new data at index 0
     for (int i = SAMPLE_SIZE - 1; i > 0; --i)
     {
@@ -141,10 +142,10 @@ void myBME::updateBuffers()
 
     for (int i = SAMPLE_SIZE - 1; i > 0; --i)
     {
-        timeMicros_buffer[i] = timeMicros_buffer[i-1];
+        timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
-    timeMicros_buffer[0] = trueTime;
-
+    timeMicros_buffer[0] = trueTime; 
+    
 }
 
 /*!
@@ -165,8 +166,8 @@ int myBME::getAvg()
 }
 
 /*!
-    @brief Calculates the 2 second average of data buffer
-    @return 2 second average, rounded to integer
+    @brief Calculates the 1 second average of data buffer
+    @return 1 second average, rounded to integer
 */
 int myBME::getAvgRecent()
 {
@@ -180,10 +181,6 @@ int myBME::getAvgRecent()
     return round(sum / RECENT_SIZE);
 }
 
-/*!
-    @brief Gets most recent altitude from buffer
-    @return altitude in m
-*/
 float myBME::getRecentData() {
     return altitude_buffer[0];
 }
@@ -201,7 +198,6 @@ void myBME::setFrequency(int rate)
                     Adafruit_BME280::SAMPLING_X16, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 );
-        frequency = rate;
     }
 
     else if (rate == 20) {
@@ -211,7 +207,6 @@ void myBME::setFrequency(int rate)
                     Adafruit_BME280::SAMPLING_X8, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 ); 
-        frequency = rate;
     }
 
     else if (rate == 30) {
@@ -221,7 +216,6 @@ void myBME::setFrequency(int rate)
                     Adafruit_BME280::SAMPLING_X8, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 );
-        frequency = rate;
     }
 
     else if (rate == 40) {
@@ -231,7 +225,6 @@ void myBME::setFrequency(int rate)
                     Adafruit_BME280::SAMPLING_X4, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 );
-        frequency = rate;
     }
 
     else if (rate == 50) {
@@ -241,17 +234,15 @@ void myBME::setFrequency(int rate)
                     Adafruit_BME280::SAMPLING_X4, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 );
-        frequency = rate;
     }
 
     else if (rate == 100) {
         setSampling(Adafruit_BME280::MODE_NORMAL,
                     Adafruit_BME280::SAMPLING_X1, // temperature
-                    Adafruit_BME280::SAMPLING_X2, // pressure
+                    Adafruit_BME280::SAMPLING_X1, // pressure
                     Adafruit_BME280::SAMPLING_X1, // humidity
                     Adafruit_BME280::FILTER_OFF,
                     Adafruit_BME280::STANDBY_MS_0_5 );
-        frequency = rate;
     }
 
     else {
@@ -266,10 +257,10 @@ void myBME::setFrequency(int rate)
 */
 bool myBME::detectLaunch()
 {   
-    Serial.print("baseline altitude: ");
-    Serial.println(baselineAltitude);
-    Serial.print("launch detect altitude: ");
-    Serial.println(baselineAltitude + ABOVE_BASELINE);
+    // Serial.print("baseline altitude: ");
+    // Serial.println(baselineAltitude);
+    // Serial.print("launch detect altitude: ");
+    // Serial.println(baselineAltitude + ABOVE_BASELINE);
 
     if (recentAverage >= baselineAltitude + ABOVE_BASELINE)
     {
