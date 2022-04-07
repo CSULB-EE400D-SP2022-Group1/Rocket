@@ -2,7 +2,8 @@
 
 /*!
     @brief initializes IMU, sets frequency of accelerometer and gyrometer at 1099Hz,
-            and fills data buffer for acceleration (m/s^2) and angular vel. (rad/s)
+            sets accelerometer range to +-30G, gyrometer range to +-4000DPS, 
+            and fills data buffer for acceleration (m/s^2) and angular vel. (rad/s) for 2 seconds
     @param ICM_CS CS pin for IMU
     @return 1 (true) if initialization is successful, 0 (false) otherwise
 */
@@ -17,24 +18,30 @@ bool myIMU::start(int ICM_CS)
     setAccelFrequency(IMU_FREQ);
     setGyroFrequency(IMU_FREQ);
 
+    setMyAccelRange(30);
+    setMyGyroRange(4000);
+
     int i = 0;
 
-    while (timePastMs <= 2000)
+    if (status)
     {
-        if (timePastMicros >= 1000000/IMU_LOGFREQ && i <= BUF_SIZE) 
-        {   
-            getEvent(&accel, &gyro, &temp);
+        while (timePastMs <= 2000)
+        {
+            if (timePastMicros >= 1000000/IMU_LOGFREQ && i <= BUF_SIZE) 
+            {   
+                getEvent(&accel, &gyro, &temp);
 
-            accX_buffer[i] = accel.acceleration.x;
-            accY_buffer[i] = accel.acceleration.y;
-            accZ_buffer[i] = accel.acceleration.z;
-            
-            gyroX_buffer[i] = gyro.gyro.x;
-            gyroY_buffer[i] = gyro.gyro.y;
-            gyroZ_buffer[i] = gyro.gyro.z;
-            
-            timePastMicros -= 1000000/IMU_LOGFREQ;
-            ++i;
+                accX_buffer[i] = accel.acceleration.x;
+                accY_buffer[i] = accel.acceleration.y;
+                accZ_buffer[i] = accel.acceleration.z;
+                
+                gyroX_buffer[i] = gyro.gyro.x;
+                gyroY_buffer[i] = gyro.gyro.y;
+                gyroZ_buffer[i] = gyro.gyro.z;
+                
+                timePastMicros -= 1000000/IMU_LOGFREQ;
+                ++i;
+            }
         }
     }
 
@@ -46,10 +53,10 @@ bool myIMU::start(int ICM_CS)
 */
 bool myIMU::getData()
 {
-    if (timeSinceDataRead >= 1000000/IMU_FREQ)
+    if (timeSinceDataRead >= 1000000/(IMU_FREQ+10))
     {
         getEvent(&accel, &gyro, &temp);
-        timeSinceDataRead -= 1000000/IMU_FREQ;
+        timeSinceDataRead -= 1000000/(IMU_FREQ+10);
       
         if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
             updateBuffers();
@@ -69,7 +76,7 @@ bool myIMU::resetDataFlag()
 }
 
 /*!
-    @brief Update buffers for acceleration and angular velocity
+    @brief Update buffers for acceleration, angular velocity, time, temperature
 */
 void myIMU::updateBuffers()
 {
@@ -108,6 +115,12 @@ void myIMU::updateBuffers()
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
     }
     gyroZ_buffer[0] = gyro.gyro.z;
+    
+    for (int i = BUF_SIZE - 1; i > 0; --i)
+    {
+        temp_buffer[i] = temp_buffer[i-1];
+    }
+    temp_buffer[0] = temp.temperature;
 
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
@@ -149,7 +162,7 @@ void myIMU::setGyroFrequency(int desiredRate)
 /*!
     @brief Sets the accelerometer's range (+- 4, 8, 16, 30G)
 */
-void myIMU::setAccelRange(int desiredRange)
+void myIMU::setMyAccelRange(int desiredRange)
 {
     switch(desiredRange) {
     case 4:
@@ -170,7 +183,7 @@ void myIMU::setAccelRange(int desiredRange)
 /*!
     @brief Sets the gyrometer's range (+- 500, 1000, 2000, 4000 DPS)
 */
-void myIMU::setGyroRange(int desiredRange)
+void myIMU::setMyGyroRange(int desiredRange)
 {
     switch(desiredRange) {
     case 500:

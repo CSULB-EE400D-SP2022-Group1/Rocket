@@ -4,7 +4,7 @@
 #include <Adafruit_ICM20649.h>
 
 const int IMU_FREQ = 1099;                          // sampling rate of accelerometer AND gyrometer 
-const int IMU_LOGFREQ = 100 + 10;                   // proposed frequency at which we are logging data + offset
+const int IMU_LOGFREQ = 100 + 3 ;                   // proposed frequency at which we are logging data + offset
 const int BUF_SIZE = 2 * IMU_LOGFREQ;               // duration of buffer (s) * logging frequency (hz)
 
 class myIMU : public Adafruit_ICM20649
@@ -19,8 +19,8 @@ class myIMU : public Adafruit_ICM20649
 
         void setAccelFrequency(int desiredRate);
         void setGyroFrequency(int desiredRate);
-        void setAccelRange(int desiredRange);
-        void setGyroRange(int desiredRange);
+        void setMyAccelRange(int desiredRange);
+        void setMyGyroRange(int desiredRange);
 
         float getTemp(int i);
         float getAccelX(int i);
@@ -30,7 +30,7 @@ class myIMU : public Adafruit_ICM20649
         float getGyroY(int i);
         float getGyroZ(int i);
         uint32_t getTime(int i);
-                
+                      
     private:
         elapsedMicros timeSinceDataRead; 
         elapsedMicros timeSinceBufferUpdate;      

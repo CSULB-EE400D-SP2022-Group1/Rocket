@@ -115,7 +115,7 @@ uint32_t myBME::getTime(int i)
 }
 
 /*!
-    @brief Fills the buffer array (buffer of 3 seconds, 30Hz)
+    @brief Updates buffers for altitude, temp, humidity, and time
 */
 void myBME::updateBuffers()
 {
