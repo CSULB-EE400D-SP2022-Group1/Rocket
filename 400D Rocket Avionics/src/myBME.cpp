@@ -28,9 +28,6 @@ bool myBME::start()
 
         baselinePressure = sum / BASELINE_SIZE;
         baselineAltitude = readAltitude(baselinePressure/100);
-
-        timeSinceDataRead = 0;          //reset because these will be non zero by the time getData() is called
-        timeSinceBufferUpdate = 0;      //reset because these will be non zero by the time getData() is called
     }   
 
     // Serial.print("Base line pressure(Pa): ");
@@ -48,24 +45,21 @@ bool myBME::start()
 bool myBME::getData()
 {    
 
-    if (timeSinceDataRead >= 1000000/(BME_FREQ+11))
-    {
+    if (micros() >= timeSinceBufferUpdate + 1000000/BME_LOGFREQ) {
+        
+        timeSinceBufferUpdate = micros();
+
         temp = readTemperature();
         altitude = readAltitude(baselinePressure/100);
         humidity = readHumidity();
 
-        if (timeSinceBufferUpdate >= 1000000/BME_LOGFREQ) {
-            updateBuffers();
-            ++newBufferDataCount;
-
-            timeSinceBufferUpdate -= 1000000/BME_LOGFREQ;
-        }
-
-        timeSinceDataRead -= 1000000/(BME_FREQ+11);
-        newDataDetect = 1;
+        updateBuffers();
+        ++newBufferDataCount;
+        return 1;
     }
 
-    return newDataDetect;
+    else
+        return 0;
 }
 
 /*!

@@ -53,22 +53,20 @@ bool myIMU::start(int ICM_CS)
 */
 bool myIMU::getData()
 {
-    if (timeSinceDataRead >= 1000000/(IMU_FREQ+10))
-    {
+
+    if (micros() >= timeSinceBufferUpdate + 1000000/IMU_LOGFREQ) {
+
+        timeSinceBufferUpdate = micros();
+
         getEvent(&accel, &gyro, &temp);
-        timeSinceDataRead -= 1000000/(IMU_FREQ+10);
-      
-        if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
-            updateBuffers();
-            ++newBufferDataCount;
-
-            timeSinceBufferUpdate -= 1000000/IMU_LOGFREQ;
-        }
-
-        dataFlag = 1;
+        updateBuffers();
+        
+        ++newBufferDataCount;
+        return 1;
     }
 
-    return dataFlag;
+    else
+        return 0;
 }
 
 bool myIMU::resetDataFlag()

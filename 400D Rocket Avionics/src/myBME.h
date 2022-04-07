@@ -4,8 +4,8 @@
 #include <Arduino.h>
 
 const int ABOVE_BASELINE = 200;                           // meters above baseline for the rocket to be considered launched
-const int BME_FREQ = 10;                                 // frequency at which BME is reading data
-static const int BME_LOGFREQ = 37;                        // desired buffer freq = 30, offset by 7 
+const int BME_FREQ = 100;                                 // frequency at which BME is reading data
+static const int BME_LOGFREQ = 30;                        // desired buffer freq = 30, offset by 7 
 static const int SAMPLE_SIZE = 3 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
 static const int RECENT_SIZE = 1 * BME_LOGFREQ;           // duration for averaging * frequency in Hz
 static const int BASELINE_SIZE = 2 *BME_LOGFREQ;          // duration for averaging * frequency in Hz
@@ -37,8 +37,8 @@ class myBME : public Adafruit_BME280
         
     private:
         // automatically keeps track of time elapsed in microseconds
-        elapsedMicros timeSinceDataRead;       
-        elapsedMicros timeSinceBufferUpdate;
+        uint32_t timeSinceDataRead{0};       
+        uint32_t timeSinceBufferUpdate{0};
         uint32_t newBufferDataCount{0};
 
         float temp, altitude, humidity;
