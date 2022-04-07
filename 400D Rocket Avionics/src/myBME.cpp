@@ -137,6 +137,13 @@ void myBME::updateBuffers()
         humidity_buffer[i] = humidity_buffer[i-1]; 
     }
     humidity_buffer[0] = humidity; 
+
+    for (int i = SAMPLE_SIZE - 1; i > 0; --i)
+    {
+        timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
+    }
+    timeMicros_buffer[0] = trueTime; 
+    
 }
 
 /*!

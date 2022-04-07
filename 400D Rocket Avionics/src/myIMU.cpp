@@ -26,8 +26,8 @@ bool myIMU::start(int ICM_CS)
             getEvent(&accel, &gyro, &temp);
 
             accX_buffer[i] = accel.acceleration.x;
-            accX_buffer[i] = accel.acceleration.x;
-            accX_buffer[i] = accel.acceleration.x;
+            accY_buffer[i] = accel.acceleration.y;
+            accZ_buffer[i] = accel.acceleration.z;
             
             gyroX_buffer[i] = gyro.gyro.x;
             gyroY_buffer[i] = gyro.gyro.y;
@@ -110,6 +110,12 @@ void myIMU::updateBuffers()
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
     }
     gyroZ_buffer[0] = gyro.gyro.z;
+
+    for (int i = BUF_SIZE - 1; i > 0; --i)
+    {
+        timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
+    }
+    timeMicros_buffer[0] = trueTime; 
 }
 
 /*!
