@@ -50,13 +50,13 @@ bool myIMU::getData()
     {
         getEvent(&accel, &gyro, &temp);
         timeSinceDataRead -= 1000000/IMU_FREQ;
+      
+        if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
+            updateBuffers();
+            timeSinceBufferUpdate -= 1000000/IMU_LOGFREQ;
+        }
 
         dataFlag = 1;
-    }
-    
-    if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
-        updateBuffers();
-        timeSinceBufferUpdate -= 1000000/IMU_LOGFREQ;
     }
 
     return dataFlag;
@@ -73,8 +73,6 @@ bool myIMU::resetDataFlag()
 */
 void myIMU::updateBuffers()
 {
-    getData();
-
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accX_buffer[i] = accX_buffer[i-1];
