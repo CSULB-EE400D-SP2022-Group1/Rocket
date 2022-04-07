@@ -56,6 +56,8 @@ bool myBME::getData()
 
         if (timeSinceBufferUpdate >= 1000000/BME_LOGFREQ) {
             updateBuffers();
+            ++newBufferDataCount;
+
             timeSinceBufferUpdate -= 1000000/BME_LOGFREQ;
         }
 
@@ -268,4 +270,9 @@ bool myBME::detectLaunch()
     }
 
     return launchDetect;
+}
+
+uint32_t myBME::getDataCount()
+{
+    return newBufferDataCount;
 }

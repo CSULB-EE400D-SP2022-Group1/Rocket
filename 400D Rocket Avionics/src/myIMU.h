@@ -30,11 +30,15 @@ class myIMU : public Adafruit_ICM20649
         float getGyroY(int i);
         float getGyroZ(int i);
         uint32_t getTime(int i);
+
+        uint32_t getDataCount();
                       
     private:
         elapsedMicros timeSinceDataRead; 
         elapsedMicros timeSinceBufferUpdate;      
         elapsedMicros trueTime;
+        uint32_t newBufferDataCount{0};
+
         bool dataFlag;
 
         float accX_buffer[BUF_SIZE] = {0.0};

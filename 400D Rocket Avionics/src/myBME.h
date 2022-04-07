@@ -32,12 +32,15 @@ class myBME : public Adafruit_BME280
 
         void setFrequency(int rate);
         bool detectLaunch();
+        uint32_t getDataCount();
+
         
     private:
         // automatically keeps track of time elapsed in microseconds
         elapsedMicros timeSinceDataRead;       
         elapsedMicros trueTime;
         elapsedMicros timeSinceBufferUpdate;
+        uint32_t newBufferDataCount{0};
 
         float temp, altitude, humidity;
         int recentAverage;
@@ -53,5 +56,4 @@ class myBME : public Adafruit_BME280
 
         bool launchDetect{0};                    // flag for launch detect, init at 0
         bool newDataDetect{0};                   // flag for new data detect, init at 0
-
 };

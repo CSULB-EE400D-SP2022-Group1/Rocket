@@ -60,6 +60,8 @@ bool myIMU::getData()
       
         if (timeSinceBufferUpdate >= 1e6/IMU_LOGFREQ) {
             updateBuffers();
+            ++newBufferDataCount;
+
             timeSinceBufferUpdate -= 1000000/IMU_LOGFREQ;
         }
 
@@ -271,4 +273,9 @@ float myIMU::getGyroZ(int i)
 uint32_t myIMU::getTime(int i)
 {
     return timeMicros_buffer[i];
+}
+
+uint32_t myIMU::getDataCount()
+{
+    return newBufferDataCount;
 }
