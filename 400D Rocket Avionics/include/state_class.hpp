@@ -30,6 +30,8 @@ class State
         char getTransition();
         bool getTransitionEvent();
 
+        bool debugTimer(unsigned long millisThen);
+
         bool detectApogee ();
         int avgOne ();
         int avgThree ();
@@ -38,7 +40,6 @@ class State
 
     private:
         char stateIndex = stateNow;
-        
         state_list stateNow;
         state_list stateNext;
 
@@ -46,6 +47,9 @@ class State
 
         bool sensorsGreen = false;        
         bool transitionEvent = false;
+
+        unsigned long millisNow;
+        unsigned long millisThen;
 
         myBME *thisBME;
 };

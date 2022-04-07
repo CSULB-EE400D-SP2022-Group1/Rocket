@@ -16,6 +16,7 @@ void State::initializeMachine(bool sensors, myBME *someBME)
         transition = static_cast<transition_list>(0);
         bool sensorsGreen = true;
         thisBME = someBME;
+        millisThen = millis();
     }
 }
 
@@ -70,17 +71,32 @@ bool State::detectApogee ()
   return true;
 }
 
+bool State::debugTimer (unsigned long millisThen)
+{
+  unsigned long millisNow = millis();
+  
+  if (millisNow - millisThen >= 250)
+  {
+    millisThen = millisNow;
+    return true;
+  }
+}
+
 
 // the machine
 void State::machine() 
 {
+  elapsedMillis();
 
   // state machine switch structure
   switch (stateIndex)
   {
     case Init:
       #if DEBUG_STATE_MACHINE
-      Serial.println("System startup. Init state");     
+      if (debugTimer(millisThen))
+      {
+        Serial.println("System startup. Init state");   
+      }  
       #endif
 
       if (sensorsGreen == true)
@@ -89,8 +105,12 @@ void State::machine()
         transition = Init_to_Pad_Idle;
         transitionEvent = true;
 
-        // debug out
-        Serial.println("Sensors detected. Proceeding to Pad_Idle state");
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Sensors detected. Proceeding to Pad_Idle state");
+        }
+        #endif
       }
       else
       {
@@ -98,8 +118,12 @@ void State::machine()
         transition = Init_to_Pad_Hold;
         transitionEvent = true;
 
-        // debug out
-        Serial.println("Sensors not detected. Proceeding to Pad_Hold state");
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Sensors not detected. Proceeding to Pad_Hold state");
+        }
+        #endif
       };
     
     stateIndex = stateNext;
@@ -115,15 +139,23 @@ void State::machine()
         transition = Pad_Idle_to_Ascent;
         transitionEvent = true;
 
-        // debug out
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
         Serial.println("Launch detected. Proceeding to Ascent state");
+        }
+        #endif
       }
       else
       {
         stateNext = Pad_Idle;
 
-        // debug out
-        Serial.println("Awaiting Launch. Standby in Pad_Idle state");        
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+        Serial.println("Awaiting Launch. Standby in Pad_Idle state");
+        }
+        #endif        
       }
       
     //detectLaunch = true;
@@ -135,8 +167,12 @@ void State::machine()
       transitionEvent = false;
       stateNext = Pad_Hold;
 
-      // debug out
-      Serial.println("System Error. Restart required");
+      #if DEBUG_STATE_MACHINE
+      if (debugTimer(millisThen))
+      {
+        Serial.println("System Error. Restart required");
+      }
+      #endif  
 
     stateIndex = stateNext;
     break;
@@ -151,15 +187,23 @@ void State::machine()
         transition = Ascent_to_Descent;
         transitionEvent = true;
 
-        // debug out
-        Serial.println("Apogee detected. Proceeding to Descent state");        
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Apogee detected. Proceeding to Descent state");
+        }
+        #endif           
       }
       else 
       {
         stateNext = Ascent;
 
-        // debug out
-        Serial.println("Rocket is Ascending");        
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Rocket is Ascending");
+        }
+        #endif           
       }
       
     //detectApogee = true;   
@@ -176,15 +220,23 @@ void State::machine()
         transition = Descent_to_Landing;
         transitionEvent = true;
 
-        // debug out
-        Serial.println("Critical Altitude achieved. Proceeding to Landing state");        
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Critical Altitude achieved. Proceeding to Landing state");
+        }
+        #endif           
       }
       else
       {
         stateNext = Descent;
 
-        // debug out
-        Serial.println("Rocket is Descending");          
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Rocket is Descending");
+        }
+        #endif             
       }
       
     //criticalAltitude = true;
@@ -199,8 +251,12 @@ void State::machine()
       {
         stateNext = Landing;
 
-        // debug out
-        Serial.println("Rocket is drifting softly to the Earth");          
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Rocket is drifting softly to the Earth");
+        }
+        #endif            
       }
 
       else
@@ -209,8 +265,12 @@ void State::machine()
         transition = Landing_to_Landing_Idle;
         transitionEvent = true;
 
-        // debug out
-        Serial.println("Touchdown detected. Proceeding to Landing_Idle state");        
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Touchdown detected. Proceeding to Landing_Idle state");
+        }
+        #endif           
       }
     stateIndex = stateNext;
     break;
@@ -221,8 +281,12 @@ void State::machine()
 
         stateNext = Landing_Idle;
 
-        // debug out
-        Serial.println("Eagle has Landed");          
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Eagle has Landed"); 
+        }
+        #endif         
   
     stateIndex = stateNext;
     break;
