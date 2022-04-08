@@ -6,6 +6,10 @@
 #include "myGPS.h"
 //#include "state.hpp"
 
+const uint8_t bme_update_frequency = 30;
+const uint8_t imu_update_frequency = 100;
+const uint8_t gps_update_frequency = 1;
+
 class Data_Storage : public LittleFS_QSPIFlash
 {
 private:
@@ -14,6 +18,8 @@ private:
     myBME* ptrBME;
 public:
     bool init();
+
+    uint32_t lastLog = 0;
 
     bool initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3); // initialize all NOR Flash Files
     bool initFileBME(myBME* ptr);
@@ -27,6 +33,7 @@ public:
     bool dumpData(); // dump all data from NOR Flash to SD Card
     bool dumpFile(char filename[13]); // dumps specific files from NOR flash to SD card
 
+    void runLogs();
     void logBME();
     void logIMU();
     void logGPS();

@@ -10,6 +10,7 @@ bool Data_Storage::init()
     }
     else
     {
+        lastLog = millis();
         Serial.println("NOR Flash Successfully Initialized");
         return 1; // Success  
     }
@@ -261,14 +262,35 @@ void Data_Storage::logBME()
 {
     String data;
     char filename[13] = "BME.csv";
-    data += String(micros());
-    data += ",";
-    data += String(ptrBME->getAltitude());
-    data += ",";
-    data += String(ptrBME->getTemp());
-    data += ",";
-    data += String(ptrBME->getHumidity());
+
+    for(int i = bme_update_frequency - 1; i >= 0 ; i--)
+    {
+        data += String(ptrBME->getTime(i));
+        data += ",";
+        data += String(ptrBME->getAltitude(i));
+        data += ",";
+        data += String(ptrBME->getTemp(i));
+        data += ",";
+        data += String(ptrBME->getHumidity(i));
+        if(i > 0)
+        {
+            data += "\n";
+        }
+    }
     writeData(filename,data);
+}
+
+
+void Data_Storage::runLogs()
+{
+    if(millis() >= lastLog + 1000)
+    {
+        lastLog = millis();
+        logBME();
+        logIMU();
+        logGPS();
+        logFSM();
+    }
 }
 
 
@@ -276,19 +298,27 @@ void Data_Storage::logIMU()
 {
     String data;    
     char filename[13] = "IMU.csv";
-    data += String(micros());
-    data += ",";
-    data += String(ptrIMU->getAccelX());
-    data += ",";
-    data += String(ptrIMU->getAccelY());
-    data += ",";
-    data += String(ptrIMU->getAccelZ());
-    data += ",";
-    data += String(ptrIMU->getGyroX());
-    data += ",";
-    data += String(ptrIMU->getGyroY());
-    data += ",";
-    data += String(ptrIMU->getGyroZ());
+    
+    for(int i = imu_update_frequency - 1; i >= 0 ; i--)
+    {
+        data += String(ptrIMU->getTime(i));
+        data += ",";
+        data += String(ptrIMU->getAccelX(i));
+        data += ",";
+        data += String(ptrIMU->getAccelY(i));
+        data += ",";
+        data += String(ptrIMU->getAccelZ(i));
+        data += ",";
+        data += String(ptrIMU->getGyroX(i));
+        data += ",";
+        data += String(ptrIMU->getGyroY(i));
+        data += ",";
+        data += String(ptrIMU->getGyroZ(i));
+        if(i > 0)
+        {
+            data += "\n";
+        }
+    }
     writeData(filename,data);
 }
 
@@ -300,8 +330,8 @@ void Data_Storage::logGPS()
     data += String(micros());
     data += ",";
     data += String(ptrGPS->getLat());
-    //data += ",";
-    //data += String(ptrGPS->getLong());
+    data += ",";
+    data += String(ptrGPS->getLng());
     data += ",";
     data += String(ptrGPS->getGPSAltitude());
     data += ",";
@@ -318,12 +348,12 @@ void Data_Storage::logGPS()
     data += String(ptrGPS->getMinute());    
     data += ",";
     data += String(ptrGPS->getSecond());    
-    //data += ",";
-    //data += String(ptrGPS->getSats());    
+    data += ",";
+    data += String(ptrGPS->numSatellites());    
     data += ",";
     data += String(ptrGPS->getHDOP());    
-    //data += ",";
-    //data += String(ptrGPS->getAge());
+    data += ",";
+    data += String(ptrGPS->getAge());
     writeData(filename,data);
 }
 
