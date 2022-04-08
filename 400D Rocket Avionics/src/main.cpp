@@ -6,6 +6,9 @@
 
 #define DEBUG false
 
+IntervalTimer timer_32Hz; // BME
+IntervalTimer timer_100Hz; // IMU
+
 uint64_t bme_last_update = 0;
 uint64_t imu_last_update = 0;
 uint64_t gps_last_update = 0;
@@ -26,12 +29,17 @@ void runSensors();
 void runState();
 void runStorage();
 
+void init_timers();
+void timer_32Hz_func();
+void timer_100Hz_func();
+
 void setup()
 {
   Serial.begin(1000000); // initialize fast serial comms
   delay(1000); // testing delay, not necessary for flight
 
   initSensors();
+  init_timers();
   initState();
   initStorage();
 }
@@ -80,8 +88,8 @@ void initStorage()
 void runSensors()
 {
   // RUN SENSORS
-  bme.getData();
-  imu.getData();
+  //bme.getData();
+  //imu.getData();
   gps.getData();
 }
 
@@ -105,4 +113,26 @@ void runStorage()
     storage.dumpData();
     while(1);
   }
+}
+
+void init_timers()
+{
+  SPI.usingInterrupt(timer_32Hz);
+  SPI.usingInterrupt(timer_100Hz);
+  timer_32Hz.begin(timer_32Hz_func,1000000/bme_update_frequency); // 30 Hz interrupt
+  timer_32Hz.priority(129);
+  timer_100Hz.begin(timer_100Hz_func,1000000/imu_update_frequency); // 100 Hz interrupt
+  timer_100Hz.priority(128);
+}
+
+
+void timer_32Hz_func()
+{
+  bme.getData();
+}
+
+
+void timer_100Hz_func()
+{
+  imu.getData();
 }

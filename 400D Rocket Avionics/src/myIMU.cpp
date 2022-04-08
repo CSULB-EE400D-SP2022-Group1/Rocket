@@ -21,30 +21,6 @@ bool myIMU::start(int ICM_CS)
     setMyAccelRange(30);
     setMyGyroRange(4000);
 
-    int i = 0;
-
-    if (status)
-    {
-        while (timePastMs <= 2000)
-        {
-            if (timePastMicros >= 1000000/IMU_LOGFREQ && i <= BUF_SIZE) 
-            {   
-                getEvent(&accel, &gyro, &temp);
-
-                accX_buffer[i] = accel.acceleration.x;
-                accY_buffer[i] = accel.acceleration.y;
-                accZ_buffer[i] = accel.acceleration.z;
-                
-                gyroX_buffer[i] = gyro.gyro.x;
-                gyroY_buffer[i] = gyro.gyro.y;
-                gyroZ_buffer[i] = gyro.gyro.z;
-                
-                timePastMicros -= 1000000/IMU_LOGFREQ;
-                ++i;
-            }
-        }
-    }
-
     return status;
 }
 
@@ -53,20 +29,11 @@ bool myIMU::start(int ICM_CS)
 */
 bool myIMU::getData()
 {
-
-    if (micros() >= timeSinceBufferUpdate + 1000000/IMU_LOGFREQ) {
-
-        timeSinceBufferUpdate = micros();
-
-        getEvent(&accel, &gyro, &temp);
-        updateBuffers();
-        
-        ++newBufferDataCount;
-        return 1;
-    }
-
-    else
-        return 0;
+    getEvent(&accel, &gyro, &temp);
+    updateBuffers();
+    
+    ++newBufferDataCount;
+    return 1;
 }
 
 bool myIMU::resetDataFlag()

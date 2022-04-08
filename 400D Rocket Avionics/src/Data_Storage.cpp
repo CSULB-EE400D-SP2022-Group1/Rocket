@@ -278,11 +278,11 @@ void Data_Storage::logBME()
         {
             data += String(ptrBME->getTime(i));
             data += ",";
-            data += String(ptrBME->getAltitude(i));
+            data += String(ptrBME->getAltitude(i),4);
             data += ",";
-            data += String(ptrBME->getTemp(i));
+            data += String(ptrBME->getTemp(i),1);
             data += ",";
-            data += String(ptrBME->getHumidity(i));
+            data += String(ptrBME->getHumidity(i),0);
             if(i > 0)
             {
                 data += "\n";
@@ -295,7 +295,7 @@ void Data_Storage::logBME()
 
 void Data_Storage::logIMU()
 {
-    if(ptrBME->getDataCount() >= imuLastLogCount + imu_update_frequency)
+    if(ptrIMU->getDataCount() >= imuLastLogCount + imu_update_frequency)
     {
         imuLastLogCount = ptrIMU->getDataCount();
         String data;    
@@ -335,13 +335,13 @@ void Data_Storage::logGPS()
         char filename[13] = "GPS.csv";
         data += String(micros());
         data += ",";
-        data += String(ptrGPS->getLat());
+        data += String(ptrGPS->getLat(),5);
         data += ",";
-        data += String(ptrGPS->getLng());
+        data += String(ptrGPS->getLng(),5);
         data += ",";
-        data += String(ptrGPS->getGPSAltitude());
+        data += String(ptrGPS->getGPSAltitude(),0);
         data += ",";
-        data += String(ptrGPS->getSpeed());
+        data += String(ptrGPS->getSpeed(),0);
         data += ",";
         data += String(ptrGPS->getYear());
         data += ",";

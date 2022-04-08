@@ -6,7 +6,7 @@
 #include "myGPS.h"
 //#include "state.hpp"
 
-const uint8_t bme_update_frequency = 30;
+const uint8_t bme_update_frequency = 32;
 const uint8_t imu_update_frequency = 100;
 const uint8_t gps_update_frequency = 1;
 
