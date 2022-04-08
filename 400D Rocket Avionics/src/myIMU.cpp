@@ -90,8 +90,6 @@ void myIMU::updateBuffers()
         gyroY_buffer[i] = gyroY_buffer[i-1];
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
 
-        temp_buffer[i] = temp_buffer[i-1];
-
         timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
 
@@ -102,8 +100,6 @@ void myIMU::updateBuffers()
     gyroX_buffer[0] = gyro.gyro.x;
     gyroY_buffer[0] = gyro.gyro.y;
     gyroZ_buffer[0] = gyro.gyro.z;
-
-    temp_buffer[0] = temp.temperature;
     
     timeMicros_buffer[0] = micros(); 
 }
@@ -178,15 +174,6 @@ void myIMU::setMyGyroRange(int desiredRange)
         setGyroRange(ICM20649_GYRO_RANGE_4000_DPS);
         break;
     }
-}
-
-/*!
-    @brief Returns data measured from IMU
-    @return temperature (deg C)
-*/
-float myIMU::getTemp(int i)
-{
-    return temp_buffer[i];
 }
 
 /*!
