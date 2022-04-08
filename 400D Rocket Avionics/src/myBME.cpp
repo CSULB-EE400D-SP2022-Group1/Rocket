@@ -43,23 +43,14 @@ bool myBME::start()
     @return flag indicating new data from sensor, 1 if data updated, 0 otherwise
 */
 bool myBME::getData()
-{    
+{
+    temp = readTemperature();
+    altitude = readAltitude(baselinePressure/100);
+    humidity = readHumidity();
 
-    if (micros() >= timeSinceBufferUpdate + 1000000/BME_LOGFREQ) {
-        
-        timeSinceBufferUpdate = micros();
-
-        temp = readTemperature();
-        altitude = readAltitude(baselinePressure/100);
-        humidity = readHumidity();
-
-        updateBuffers();
-        ++newBufferDataCount;
-        return 1;
-    }
-
-    else
-        return 0;
+    updateBuffers();
+    ++newBufferDataCount;
+    return 1;
 }
 
 /*!

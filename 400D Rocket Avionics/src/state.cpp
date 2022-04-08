@@ -6,7 +6,7 @@ bool detectApogee = true;
 bool criticalAltitude = true;
 bool touchdown = true;
 */
-#define DEBUG_STATE_MACHINE true
+#define DEBUG_STATE_MACHINE false
 
 void State::initializeMachine(bool sensors, myBME *someBME)
 {

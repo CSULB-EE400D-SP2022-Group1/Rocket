@@ -4,11 +4,12 @@
 #include "myBME.h"
 #include "myIMU.h"
 #include "myGPS.h"
-//#include "state.hpp"
+#include "state_class.hpp"
 
-const uint8_t bme_update_frequency = 30;
+const uint8_t bme_update_frequency = 32;
 const uint8_t imu_update_frequency = 100;
 const uint8_t gps_update_frequency = 1;
+
 
 class Data_Storage : public LittleFS_QSPIFlash
 {
@@ -16,16 +17,22 @@ private:
     myGPS* ptrGPS;
     myIMU* ptrIMU;
     myBME* ptrBME;
+    State* ptrFSM;
+    
+    uint32_t bmeLastLogCount = 0;
+    uint32_t imuLastLogCount = 0;
+    uint32_t gpsLastLogTime = 0; // milliseconds
+
+    int8_t lastState = -1;
+
 public:
     bool init();
 
-    uint32_t lastLog = 0;
-
-    bool initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3); // initialize all NOR Flash Files
+    bool initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3,State* ptr4); // initialize all NOR Flash Files
     bool initFileBME(myBME* ptr);
     bool initFileIMU(myIMU* ptr);
     bool initFileGPS(myGPS* ptr);
-    bool initFileFSM();
+    bool initFileFSM(State* ptr);
 
     void formatFlash();
     bool writeData(char filename[13], String data); // write a single line of data to a file

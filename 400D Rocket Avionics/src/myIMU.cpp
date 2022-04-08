@@ -21,30 +21,6 @@ bool myIMU::start(int ICM_CS)
     setMyAccelRange(30);
     setMyGyroRange(4000);
 
-    int i = 0;
-
-    if (status)
-    {
-        while (timePastMs <= 2000)
-        {
-            if (timePastMicros >= 1000000/IMU_LOGFREQ && i <= BUF_SIZE) 
-            {   
-                getEvent(&accel, &gyro, &temp);
-
-                accX_buffer[i] = accel.acceleration.x;
-                accY_buffer[i] = accel.acceleration.y;
-                accZ_buffer[i] = accel.acceleration.z;
-                
-                gyroX_buffer[i] = gyro.gyro.x;
-                gyroY_buffer[i] = gyro.gyro.y;
-                gyroZ_buffer[i] = gyro.gyro.z;
-                
-                timePastMicros -= 1000000/IMU_LOGFREQ;
-                ++i;
-            }
-        }
-    }
-
     return status;
 }
 
@@ -53,20 +29,11 @@ bool myIMU::start(int ICM_CS)
 */
 bool myIMU::getData()
 {
-
-    if (micros() >= timeSinceBufferUpdate + 1000000/IMU_LOGFREQ) {
-
-        timeSinceBufferUpdate = micros();
-
-        getEvent(&accel, &gyro, &temp);
-        updateBuffers();
-        
-        ++newBufferDataCount;
-        return 1;
-    }
-
-    else
-        return 0;
+    getEvent(&accel, &gyro, &temp);
+    updateBuffers();
+    
+    ++newBufferDataCount;
+    return 1;
 }
 
 bool myIMU::resetDataFlag()
@@ -83,49 +50,24 @@ void myIMU::updateBuffers()
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accX_buffer[i] = accX_buffer[i-1];
-    }
-    accX_buffer[0] = accel.acceleration.x;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         accY_buffer[i] = accY_buffer[i-1];
-    }
-    accY_buffer[0] = accel.acceleration.y;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         accZ_buffer[i] = accZ_buffer[i-1];
-    }
-    accZ_buffer[0] = accel.acceleration.z;
 
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroX_buffer[i] = gyroX_buffer[i-1];
-    }
-    gyroX_buffer[0] = gyro.gyro.x;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroY_buffer[i] = gyroY_buffer[i-1];
-    }
-    gyroY_buffer[0] = gyro.gyro.y;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
-    }
-    gyroZ_buffer[0] = gyro.gyro.z;
-    
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
-        temp_buffer[i] = temp_buffer[i-1];
-    }
-    temp_buffer[0] = temp.temperature;
 
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
+
+    accX_buffer[0] = accel.acceleration.x;
+    accY_buffer[0] = accel.acceleration.y;
+    accZ_buffer[0] = accel.acceleration.z;
+
+    gyroX_buffer[0] = gyro.gyro.x;
+    gyroY_buffer[0] = gyro.gyro.y;
+    gyroZ_buffer[0] = gyro.gyro.z;
+    
     timeMicros_buffer[0] = micros(); 
 }
 
@@ -199,15 +141,6 @@ void myIMU::setMyGyroRange(int desiredRange)
         setGyroRange(ICM20649_GYRO_RANGE_4000_DPS);
         break;
     }
-}
-
-/*!
-    @brief Returns data measured from IMU
-    @return temperature (deg C)
-*/
-float myIMU::getTemp(int i)
-{
-    return temp_buffer[i];
 }
 
 /*!
