@@ -10,7 +10,6 @@ bool Data_Storage::init()
     }
     else
     {
-        lastLog = millis();
         Serial.println("NOR Flash Successfully Initialized");
         return 1; // Success  
     }
@@ -258,103 +257,111 @@ bool Data_Storage::dumpFile(char filename[13])
 }
 
 
-void Data_Storage::logBME()
+void Data_Storage::runLogs()
 {
-    String data;
-    char filename[13] = "BME.csv";
-
-    for(int i = bme_update_frequency - 1; i >= 0 ; i--)
-    {
-        data += String(ptrBME->getTime(i));
-        data += ",";
-        data += String(ptrBME->getAltitude(i));
-        data += ",";
-        data += String(ptrBME->getTemp(i));
-        data += ",";
-        data += String(ptrBME->getHumidity(i));
-        if(i > 0)
-        {
-            data += "\n";
-        }
-    }
-    writeData(filename,data);
+    logBME();
+    logIMU();
+    logGPS();
+    logFSM();
 }
 
 
-void Data_Storage::runLogs()
+void Data_Storage::logBME()
 {
-    if(millis() >= lastLog + 1000)
+    if(ptrBME->getDataCount() >= bmeLastLogCount + bme_update_frequency)
     {
-        lastLog = millis();
-        logBME();
-        logIMU();
-        logGPS();
-        logFSM();
+        bmeLastLogCount = ptrBME->getDataCount();
+        String data;
+        char filename[13] = "BME.csv";
+
+        for(int i = bme_update_frequency - 1; i >= 0 ; i--)
+        {
+            data += String(ptrBME->getTime(i));
+            data += ",";
+            data += String(ptrBME->getAltitude(i));
+            data += ",";
+            data += String(ptrBME->getTemp(i));
+            data += ",";
+            data += String(ptrBME->getHumidity(i));
+            if(i > 0)
+            {
+                data += "\n";
+            }
+        }
+        writeData(filename,data);
     }
 }
 
 
 void Data_Storage::logIMU()
 {
-    String data;    
-    char filename[13] = "IMU.csv";
-    
-    for(int i = imu_update_frequency - 1; i >= 0 ; i--)
+    if(ptrBME->getDataCount() >= imuLastLogCount + imu_update_frequency)
     {
-        data += String(ptrIMU->getTime(i));
-        data += ",";
-        data += String(ptrIMU->getAccelX(i));
-        data += ",";
-        data += String(ptrIMU->getAccelY(i));
-        data += ",";
-        data += String(ptrIMU->getAccelZ(i));
-        data += ",";
-        data += String(ptrIMU->getGyroX(i));
-        data += ",";
-        data += String(ptrIMU->getGyroY(i));
-        data += ",";
-        data += String(ptrIMU->getGyroZ(i));
-        if(i > 0)
+        imuLastLogCount = ptrIMU->getDataCount();
+        String data;    
+        char filename[13] = "IMU.csv";
+        
+        for(int i = imu_update_frequency - 1; i >= 0 ; i--)
         {
-            data += "\n";
+            data += String(ptrIMU->getTime(i));
+            data += ",";
+            data += String(ptrIMU->getAccelX(i),4);
+            data += ",";
+            data += String(ptrIMU->getAccelY(i),4);
+            data += ",";
+            data += String(ptrIMU->getAccelZ(i),4);
+            data += ",";
+            data += String(ptrIMU->getGyroX(i),4);
+            data += ",";
+            data += String(ptrIMU->getGyroY(i),4);
+            data += ",";
+            data += String(ptrIMU->getGyroZ(i),4);
+            if(i > 0)
+            {
+                data += "\n";
+            }
         }
+        writeData(filename,data);
     }
-    writeData(filename,data);
 }
 
 
 void Data_Storage::logGPS()
 {
-    String data;    
-    char filename[13] = "GPS.csv";
-    data += String(micros());
-    data += ",";
-    data += String(ptrGPS->getLat());
-    data += ",";
-    data += String(ptrGPS->getLng());
-    data += ",";
-    data += String(ptrGPS->getGPSAltitude());
-    data += ",";
-    data += String(ptrGPS->getSpeed());
-    data += ",";
-    data += String(ptrGPS->getYear());
-    data += ",";
-    data += String(ptrGPS->getMonth());
-    data += ",";
-    data += String(ptrGPS->getDay());
-    data += ",";
-    data += String(ptrGPS->getHour());
-    data += ",";
-    data += String(ptrGPS->getMinute());    
-    data += ",";
-    data += String(ptrGPS->getSecond());    
-    data += ",";
-    data += String(ptrGPS->numSatellites());    
-    data += ",";
-    data += String(ptrGPS->getHDOP());    
-    data += ",";
-    data += String(ptrGPS->getAge());
-    writeData(filename,data);
+    if(millis() >= gpsLastLogTime + 1000)
+    {
+        gpsLastLogTime = millis();
+        String data;    
+        char filename[13] = "GPS.csv";
+        data += String(micros());
+        data += ",";
+        data += String(ptrGPS->getLat());
+        data += ",";
+        data += String(ptrGPS->getLng());
+        data += ",";
+        data += String(ptrGPS->getGPSAltitude());
+        data += ",";
+        data += String(ptrGPS->getSpeed());
+        data += ",";
+        data += String(ptrGPS->getYear());
+        data += ",";
+        data += String(ptrGPS->getMonth());
+        data += ",";
+        data += String(ptrGPS->getDay());
+        data += ",";
+        data += String(ptrGPS->getHour());
+        data += ",";
+        data += String(ptrGPS->getMinute());    
+        data += ",";
+        data += String(ptrGPS->getSecond());    
+        data += ",";
+        data += String(ptrGPS->numSatellites());    
+        data += ",";
+        data += String(ptrGPS->getHDOP());    
+        data += ",";
+        data += String(ptrGPS->getAge());
+        writeData(filename,data);
+    }
 }
 
 

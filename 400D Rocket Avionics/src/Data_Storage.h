@@ -10,6 +10,7 @@ const uint8_t bme_update_frequency = 30;
 const uint8_t imu_update_frequency = 100;
 const uint8_t gps_update_frequency = 1;
 
+
 class Data_Storage : public LittleFS_QSPIFlash
 {
 private:
@@ -19,7 +20,9 @@ private:
 public:
     bool init();
 
-    uint32_t lastLog = 0;
+    uint32_t bmeLastLogCount = 0;
+    uint32_t imuLastLogCount = 0;
+    uint32_t gpsLastLogTime = 0; // milliseconds
 
     bool initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3); // initialize all NOR Flash Files
     bool initFileBME(myBME* ptr);

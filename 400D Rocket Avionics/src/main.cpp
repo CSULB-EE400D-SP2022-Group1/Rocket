@@ -40,11 +40,6 @@ uint32_t counter = 0;
 
 void loop()
 { 
-  if(millis() >= counter + 500)
-  {
-    counter = millis();
-    Serial.println(bme.getAvgRecent());
-  }
   runSensors();
   runState();
   runStorage();
@@ -105,7 +100,7 @@ void runStorage()
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
   storage.runLogs();
   // Dump data to SD Card post landing confirmation
-  if(millis() >= (10+180)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
   {
     storage.dumpData();
     while(1);
