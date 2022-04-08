@@ -48,19 +48,18 @@ int State::avgThree ()
 bool State::detectApogee (uint32_t getDataCount)
 {
   indexNow = getDataCount;
-  int count = 0;
 
-  if (count = 5)
+  if (dataCount == 3)
   {
     return true;
   }  
   else if ((indexNow > indexThen) && (avgOne() < avgThree()))
   {
-    count++;
+    dataCount++;
   }
   else
   {
-    count = 0;
+    dataCount = 0;
   }
 
   indexThen = indexNow;     
@@ -77,6 +76,7 @@ bool State::debugTimer (unsigned long millisThen)
     millisThen = millisNow;
     return true;
   }
+  return false;
 }
 
 
@@ -213,7 +213,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (thisBME->getAvgRecent() < 5)
+      if (thisBME->getAvgRecent() < 3)
       {
         stateNext = Landing;
         transition = Descent_to_Landing;
@@ -247,7 +247,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if ((thisBME->getAvg() < 100) && (millis() - landingTransitionEvent > 60000))
+      if ((thisBME->getAvg() < 2) && (millis() - landingTransitionEvent > 60000))
       {
         stateNext = Landing_Idle;
         transition = Landing_to_Landing_Idle;
@@ -268,7 +268,7 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Rocket is drifting softly to the Earth");
+          Serial.println("Rocket is drifting gently to Earth");
         }
         #endif           
       }

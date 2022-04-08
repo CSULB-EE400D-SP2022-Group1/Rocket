@@ -35,6 +35,7 @@ class State
         void machine ();
 
     private:
+        int dataCount;
         bool detectApogee (uint32_t getDataCount);
         int indexNow = 0;
         int indexThen = 0;
