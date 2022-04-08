@@ -1,6 +1,21 @@
 #pragma once
 #include "myBME.h"
-//comment check it out
+
+// CRITICAL VARIABLE DEFINITIONS
+    // detectApogee() criteria, transition to 'Descent' state
+    const int DATA_COUNT_LIMIT = 5;
+    
+    // Transition to 'Landing' state
+    const int CRITICAL_ALTITUDE = 100;
+
+    // Transition to 'Landing_Idle' state
+    const int LANDING_IDLE_THRESHOLD = 100;
+    const int LANDING_IDLE_ELAPSED = 60000;
+    
+    // DEBUG
+    const int DEBUG_OUT_INTERVAL = 500;
+
+
 enum state_list 
 {
     Init,
@@ -32,16 +47,19 @@ class State
 
         bool debugTimer(unsigned long millisThen);
 
-        void machine ();
+        void machine();
 
     private:
-        int dataCount;
+        // APOGEE
         bool detectApogee (uint32_t getDataCount);
+
+        int dataCount = 0;
         int indexNow = 0;
         int indexThen = 0;
-        int avgOne ();
-        int avgThree ();
+        int avgOne();
+        int avgThree();
 
+        // STATE
         char stateIndex = stateNow;
         state_list stateNow;
         state_list stateNext;

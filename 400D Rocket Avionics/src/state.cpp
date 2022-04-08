@@ -1,11 +1,5 @@
 #include "state_class.hpp"
-/*
-bool sensorsGreen = true;
-bool detectLaunch = true;
-bool detectApogee = true;
-bool criticalAltitude = true;
-bool touchdown = true;
-*/
+
 #define DEBUG_STATE_MACHINE false
 
 void State::initializeMachine(bool sensors, myBME *someBME)
@@ -19,37 +13,55 @@ void State::initializeMachine(bool sensors, myBME *someBME)
         millisThen = millis();
     }
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 char State::getState()
 {
     return stateNow;
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 char State::getTransition()
 {
     return transition;
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 bool State::getTransitionEvent()
 {
   return transitionEvent;
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 int State::avgOne ()
 {
   return thisBME->getAvgRecent();
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 int State::avgThree ()
 {
   return thisBME->getAvg();
 }
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 bool State::detectApogee (uint32_t getDataCount)
 {
   indexNow = getDataCount;
 
-  if (dataCount == 3)
+  if (dataCount == DATA_COUNT_LIMIT)
   {
     return true;
   }  
@@ -66,12 +78,15 @@ bool State::detectApogee (uint32_t getDataCount)
   return false;
 }
 
-
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 bool State::debugTimer (unsigned long millisThen)
 {
   unsigned long millisNow = millis();
   
-  if (millisNow - millisThen >= 250)
+  if (millisNow - millisThen >= DEBUG_OUT_INTERVAL)
   {
     millisThen = millisNow;
     return true;
@@ -80,7 +95,10 @@ bool State::debugTimer (unsigned long millisThen)
 }
 
 
-// the machine
+/*!
+    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
+    @return 1 (true) if initialized successfully, 0 (false) otherwise
+*/
 void State::machine() 
 {
   elapsedMillis();
@@ -213,7 +231,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (thisBME->getAvgRecent() < 3)
+      if (thisBME->getAvgRecent() < CRITICAL_ALTITUDE)
       {
         stateNext = Landing;
         transition = Descent_to_Landing;
@@ -247,7 +265,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if ((thisBME->getAvg() < 2) && (millis() - landingTransitionEvent > 60000))
+      if ((thisBME->getAvg() < LANDING_IDLE_THRESHOLD) && (millis() - landingTransitionEvent > LANDING_IDLE_ELAPSED))
       {
         stateNext = Landing_Idle;
         transition = Landing_to_Landing_Idle;
