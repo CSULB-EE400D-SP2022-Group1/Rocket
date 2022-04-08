@@ -32,13 +32,15 @@ class State
 
         bool debugTimer(unsigned long millisThen);
 
-        bool detectApogee ();
-        int avgOne ();
-        int avgThree ();
-
         void machine ();
 
     private:
+        bool detectApogee (uint32_t getDataCount);
+        int indexNow = 0;
+        int indexThen = 0;
+        int avgOne ();
+        int avgThree ();
+
         char stateIndex = stateNow;
         state_list stateNow;
         state_list stateNext;
@@ -50,6 +52,7 @@ class State
 
         unsigned long millisNow;
         unsigned long millisThen;
+        unsigned long landingTransitionEvent;
 
         myBME *thisBME;
 };

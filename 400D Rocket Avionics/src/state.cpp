@@ -14,7 +14,7 @@ void State::initializeMachine(bool sensors, myBME *someBME)
     {
         stateNow = static_cast<state_list>(0);
         transition = static_cast<transition_list>(0);
-        bool sensorsGreen = true;
+        sensorsGreen = true;
         thisBME = someBME;
         millisThen = millis();
     }
@@ -45,31 +45,28 @@ int State::avgThree ()
   return thisBME->getAvg();
 }
 
-bool State::detectApogee ()
+bool State::detectApogee (uint32_t getDataCount)
 {
-  int index = 0;
+  indexNow = getDataCount;
   int count = 0;
 
-  while (index < 5)
+  if (count = 5)
   {
-    if (count == 5)
-    {
-      break;
-    }
-    else if (avgOne() < avgThree())
-    {
-      count++;
-      index++;
-      continue;
-    }
-    else
-    {
-      index = 0;
-      continue;
-    }
+    return true;
+  }  
+  else if ((indexNow > indexThen) && (avgOne() < avgThree()))
+  {
+    count++;
   }
-  return true;
+  else
+  {
+    count = 0;
+  }
+
+  indexThen = indexNow;     
+  return false;
 }
+
 
 bool State::debugTimer (unsigned long millisThen)
 {
@@ -183,7 +180,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (detectApogee() == true)
+      if (detectApogee(thisBME->getDataCount()) == true)
       {
         stateNext = Descent;
         transition = Ascent_to_Descent;
@@ -220,6 +217,7 @@ void State::machine()
       {
         stateNext = Landing;
         transition = Descent_to_Landing;
+        landingTransitionEvent = millis();
         transitionEvent = true;
 
         #if DEBUG_STATE_MACHINE
@@ -249,19 +247,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-      if (thisBME->getAvgRecent() > 2)
-      {
-        stateNext = Landing;
-
-        #if DEBUG_STATE_MACHINE
-        if (debugTimer(millisThen))
-        {
-          Serial.println("Rocket is drifting softly to the Earth");
-        }
-        #endif            
-      }
-
-      else
+      if ((thisBME->getAvg() < 100) && (millis() - landingTransitionEvent > 60000))
       {
         stateNext = Landing_Idle;
         transition = Landing_to_Landing_Idle;
@@ -272,8 +258,21 @@ void State::machine()
         {
           Serial.println("Touchdown detected. Proceeding to Landing_Idle state");
         }
+        #endif            
+      }
+
+      else
+      {
+        stateNext = Landing;
+
+        #if DEBUG_STATE_MACHINE
+        if (debugTimer(millisThen))
+        {
+          Serial.println("Rocket is drifting softly to the Earth");
+        }
         #endif           
       }
+
     stateIndex = stateNext;
     break;
 
