@@ -1,19 +1,21 @@
 #pragma once
 #include "myBME.h"
 
-// CRITICAL VARIABLE DEFINITIONS
-    // detectApogee() criteria, transition to 'Descent' state
-    const int DATA_COUNT_LIMIT = 5;
-    
-    // Transition to 'Landing' state
-    const int CRITICAL_ALTITUDE = 100;
 
-    // Transition to 'Landing_Idle' state
-    const int LANDING_IDLE_THRESHOLD = 100;
-    const int LANDING_IDLE_ELAPSED = 60000;
+// CRITICAL VARIABLE DEFINITIONS
+
+    const int DATA_COUNT_LIMIT = 5;                       // Counter limit in detecting Apogee to transition into 'Descent' state
     
-    // DEBUG
-    const int DEBUG_OUT_INTERVAL = 500;
+
+                                            
+    const int CRITICAL_ALTITUDE = 100;                    // Altiude (m) measurement to transition from 'Descent' state to 'Landing' state
+
+
+    const int LANDING_IDLE_THRESHOLD = 100;               // Threshold alitude (m) to determine the rocket is in 'Landing Idle' state
+    const int LANDING_IDLE_ELAPSED = 60000;               // Elapsed time (ms) to determine the rocket is in in 'Landing Idle' state 
+    
+    
+    const int DEBUG_OUT_INTERVAL = 500;                   // Moterating time (ms) of debug statements for terminal
 
 
 enum state_list 
@@ -53,10 +55,10 @@ class State
         // APOGEE
         bool detectApogee (uint32_t getDataCount);
 
-        int dataCount = 0;
-        int indexNow = 0;
-        int indexThen = 0;
-        int avgOne();
+        int dataCount = 0;                          // Index of the altidude data from the BME used for detecting apogee
+        int indexNow = 0;                           // Indexing the current BME data 
+        int indexThen = 0;                          // Indexing current BME data to past BME data
+        int avgOne();                               
         int avgThree();
 
         // STATE
