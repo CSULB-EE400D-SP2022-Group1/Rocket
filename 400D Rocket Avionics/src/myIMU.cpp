@@ -83,49 +83,28 @@ void myIMU::updateBuffers()
     for (int i = BUF_SIZE - 1; i > 0; --i)
     {
         accX_buffer[i] = accX_buffer[i-1];
-    }
-    accX_buffer[0] = accel.acceleration.x;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         accY_buffer[i] = accY_buffer[i-1];
-    }
-    accY_buffer[0] = accel.acceleration.y;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         accZ_buffer[i] = accZ_buffer[i-1];
-    }
-    accZ_buffer[0] = accel.acceleration.z;
 
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroX_buffer[i] = gyroX_buffer[i-1];
-    }
-    gyroX_buffer[0] = gyro.gyro.x;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroY_buffer[i] = gyroY_buffer[i-1];
-    }
-    gyroY_buffer[0] = gyro.gyro.y;
-
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
         gyroZ_buffer[i] = gyroZ_buffer[i-1];
-    }
-    gyroZ_buffer[0] = gyro.gyro.z;
-    
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
-        temp_buffer[i] = temp_buffer[i-1];
-    }
-    temp_buffer[0] = temp.temperature;
 
-    for (int i = BUF_SIZE - 1; i > 0; --i)
-    {
+        temp_buffer[i] = temp_buffer[i-1];
+
         timeMicros_buffer[i] = timeMicros_buffer[i-1]; 
     }
+
+    accX_buffer[0] = accel.acceleration.x;
+    accY_buffer[0] = accel.acceleration.y;
+    accZ_buffer[0] = accel.acceleration.z;
+
+    gyroX_buffer[0] = gyro.gyro.x;
+    gyroY_buffer[0] = gyro.gyro.y;
+    gyroZ_buffer[0] = gyro.gyro.z;
+
+    temp_buffer[0] = temp.temperature;
+    
     timeMicros_buffer[0] = micros(); 
 }
 
