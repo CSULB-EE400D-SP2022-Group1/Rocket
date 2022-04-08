@@ -79,7 +79,7 @@ void initStorage()
   // Initialize File Storage  
   storage.init();
   storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
-  storage.initFiles(&bme,&imu,&gps);
+  storage.initFiles(&bme,&imu,&gps,&fsm);
 
   while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
 }

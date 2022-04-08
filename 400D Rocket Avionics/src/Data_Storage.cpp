@@ -16,12 +16,12 @@ bool Data_Storage::init()
 }
 
 
-bool Data_Storage::initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3)
+bool Data_Storage::initFiles(myBME* ptr1,myIMU* ptr2,myGPS* ptr3,State* ptr4)
 {
     initFileBME(ptr1);
     initFileIMU(ptr2);
     initFileGPS(ptr3);
-    //initFileFSM();
+    initFileFSM(ptr4);
     return 1;
 }
 
@@ -132,8 +132,9 @@ bool Data_Storage::initFileGPS(myGPS* ptr)
 }
 
 
-bool Data_Storage::initFileFSM()
+bool Data_Storage::initFileFSM(State* ptr)
 {
+    ptrFSM = ptr;
     // Initialize GPS Data File
     char filename[13] = "FSM.csv";
     String data;
@@ -280,7 +281,7 @@ void Data_Storage::logBME()
             data += ",";
             data += String(ptrBME->getAltitude(i),4);
             data += ",";
-            data += String(ptrBME->getTemp(i),1);
+            data += String(ptrBME->getTemp(i),0);
             data += ",";
             data += String(ptrBME->getHumidity(i),0);
             if(i > 0)
@@ -367,5 +368,32 @@ void Data_Storage::logGPS()
 
 void Data_Storage::logFSM()
 {
-
+    if(lastState < ptrFSM->getState())
+    {
+        lastState++;
+        switch(ptrFSM->getState())
+        {
+        case 0:
+            Serial.println("STATE Init");
+            break;
+        case 1:
+            Serial.println("STATE Pad_Hold");
+            break;
+        case 2:
+            Serial.println("STATE Pad_Idle");
+            break;
+        case 3:
+            Serial.println("STATE Ascent");
+            break;
+        case 4:
+            Serial.println("STATE Descent");
+            break;
+        case 5:
+            Serial.println("STATE Landing");
+            break;
+        case 6:
+            Serial.println("STATE Landing_Idle");
+            break;
+        }
+    }
 }
