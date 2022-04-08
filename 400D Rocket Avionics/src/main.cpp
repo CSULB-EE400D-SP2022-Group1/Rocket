@@ -49,7 +49,7 @@ uint32_t counter = 0;
 void loop()
 { 
   runSensors();
-  runState();
+  //runState();
   runStorage();
 }
 
