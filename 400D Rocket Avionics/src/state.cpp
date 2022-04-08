@@ -2,6 +2,10 @@
 
 #define DEBUG_STATE_MACHINE false
 
+/*!
+    @brief Initializes the state machine to 'Init' and provides pointer to myBME object
+    @return void
+*/
 void State::initializeMachine(bool sensors, myBME *someBME)
 {
     if (sensors == true)
@@ -13,49 +17,55 @@ void State::initializeMachine(bool sensors, myBME *someBME)
         millisThen = millis();
     }
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief gets current state of state machine
+    @return char stateNow
 */
 char State::getState()
 {
     return stateNow;
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief gets next state transition of state machine
+    @return char stateNext
 */
 char State::getTransition()
 {
     return transition;
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief flags transition event when detected
+    @return 1 (true) if state machine transition, 0 (false) otherwise
 */
 bool State::getTransitionEvent()
 {
   return transitionEvent;
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief calls myBME::getAvgRecent() for altitude
+    @return int avgOne
 */
 int State::avgOne ()
 {
   return thisBME->getAvgRecent();
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief calls myBME::getAvgRecent() for altitude
+    @return int avgThree
 */
 int State::avgThree ()
 {
   return thisBME->getAvg();
 }
+
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief calls myBME::getDataCount() for data pull events, compares avgOne and avgThree for apogee across multiple pulls
+    @return 1 (true) if apogee detected, 0 (false) otherwise
 */
 bool State::detectApogee (uint32_t getDataCount)
 {
@@ -79,8 +89,8 @@ bool State::detectApogee (uint32_t getDataCount)
 }
 
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief determines debug output interval
+    @return 1 (true) if interval satisfied, 0 (false) otherwise
 */
 bool State::debugTimer (unsigned long millisThen)
 {
@@ -94,10 +104,9 @@ bool State::debugTimer (unsigned long millisThen)
   return false;
 }
 
-
 /*!
-    @brief Initializes the sensor at 100Hz, then calculate a baseline altitude in two seconds
-    @return 1 (true) if initialized successfully, 0 (false) otherwise
+    @brief calls State:machine()
+    @return void
 */
 void State::machine() 
 {
@@ -116,6 +125,7 @@ void State::machine()
       }  
       #endif
 
+      // 'Init' state transition to 'Pad_Idle' or 'Pad_Hold'
       if (sensorsGreen == true)
       {
         stateNext = Pad_Idle;
@@ -150,6 +160,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
+      // 'Pad_Idle' state transtion to 'Ascent'
       if (thisBME->detectLaunch() == true)
       {
         stateNext = Ascent;
@@ -175,7 +186,6 @@ void State::machine()
         #endif        
       }
       
-    //detectLaunch = true;
     stateIndex = stateNext;
     break;
 
@@ -198,6 +208,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
+      // 'Ascent' state transtion to 'Descent'
       if (detectApogee(thisBME->getDataCount()) == true)
       {
         stateNext = Descent;
@@ -231,6 +242,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
+      // 'Descent' state transtion to 'Landing'
       if (thisBME->getAvgRecent() < CRITICAL_ALTITUDE)
       {
         stateNext = Landing;
@@ -265,6 +277,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
+      // 'Landing' state transtion to 'Landing_Idle'
       if ((thisBME->getAvg() < LANDING_IDLE_THRESHOLD) && (millis() - landingTransitionEvent > LANDING_IDLE_ELAPSED))
       {
         stateNext = Landing_Idle;
