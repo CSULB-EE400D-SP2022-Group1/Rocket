@@ -7,7 +7,7 @@
     
 
                                             
-    const int CRITICAL_ALTITUDE = 100;                    // Altiude (m) measurement to transition from 'Descent' state to 'Landing' state
+    const int CRITICAL_ALTITUDE = 300;                    // Altiude (m) measurement to transition from 'Descent' state to 'Landing' state
 
 
     const int LANDING_IDLE_THRESHOLD = 100;               // Threshold alitude (m) to determine the rocket is in 'Landing Idle' state

@@ -391,7 +391,7 @@ void Data_Storage::logFSM()
             data += String(micros());
             data += ",";
             data += "Rocket is in initialization state";
-            if (!init)
+            if (!ini)
             {
                 writeData(filename,data);
                 ini = true;
