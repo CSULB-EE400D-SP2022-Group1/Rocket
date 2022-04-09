@@ -45,7 +45,7 @@ class State
         char getTransition();
         bool getTransitionEvent();
 
-        bool debugTimer(unsigned long millisThen);
+        bool debugTimer();
 
         void machine();
 

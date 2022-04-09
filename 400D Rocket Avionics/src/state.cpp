@@ -92,9 +92,9 @@ bool State::detectApogee (uint32_t getDataCount)
     @brief determines debug output interval
     @return 1 (true) if interval satisfied, 0 (false) otherwise
 */
-bool State::debugTimer (unsigned long millisThen)
+bool State::debugTimer ()
 {
-  unsigned long millisNow = millis();
+  millisNow = millis();
   
   if (millisNow - millisThen >= DEBUG_OUT_INTERVAL)
   {
@@ -121,7 +121,8 @@ void State::machine()
       #if DEBUG_STATE_MACHINE
       if (debugTimer(millisThen))
       {
-        Serial.println("System startup. Init state");   
+        Serial.print("System startup. Init state");
+        Serial.println(millis()/1000);
       }  
       #endif
 
@@ -135,7 +136,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Sensors detected. Proceeding to Pad_Idle state");
+          Serial.print("Sensors detected. Proceeding to Pad_Idle state");
+          Serial.println(millis()/1000);
         }
         #endif
       }
@@ -148,7 +150,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Sensors not detected. Proceeding to Pad_Hold state");
+          Serial.print("Sensors not detected. Proceeding to Pad_Hold state");
+          Serial.println(millis()/1000);
         }
         #endif
       };
@@ -170,7 +173,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-        Serial.println("Launch detected. Proceeding to Ascent state");
+        Serial.print("Launch detected. Proceeding to Ascent state");
+        Serial.println(millis()/1000);
         }
         #endif
       }
@@ -181,7 +185,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-        Serial.println("Awaiting Launch. Standby in Pad_Idle state");
+        Serial.print("Awaiting Launch. Standby in Pad_Idle state");
+        Serial.println(millis()/1000);
         }
         #endif        
       }
@@ -197,7 +202,8 @@ void State::machine()
       #if DEBUG_STATE_MACHINE
       if (debugTimer(millisThen))
       {
-        Serial.println("System Error. Restart required");
+        Serial.print("System Error. Restart required");
+        Serial.println(millis()/1000);
       }
       #endif  
 
@@ -218,7 +224,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Apogee detected. Proceeding to Descent state");
+          Serial.print("Apogee detected. Proceeding to Descent state");
+          Serial.println(millis()/1000);
         }
         #endif           
       }
@@ -229,7 +236,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Rocket is Ascending");
+          Serial.print("Rocket is Ascending");
+          Serial.println(millis()/1000);
         }
         #endif           
       }
@@ -253,7 +261,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Critical Altitude achieved. Proceeding to Landing state");
+          Serial.print("Critical Altitude achieved. Proceeding to Landing state");
+          Serial.println(millis()/1000);
         }
         #endif           
       }
@@ -264,7 +273,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Rocket is Descending");
+          Serial.print("Rocket is Descending");
+          Serial.println(millis()/1000);
         }
         #endif             
       }
@@ -287,7 +297,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Touchdown detected. Proceeding to Landing_Idle state");
+          Serial.print("Touchdown detected. Proceeding to Landing_Idle state");
+          Serial.println(millis()/1000);
         }
         #endif            
       }
@@ -299,7 +310,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Rocket is drifting gently to Earth");
+          Serial.print("Rocket is drifting gently to Earth");
+          Serial.println(millis()/1000);
         }
         #endif           
       }
@@ -316,7 +328,8 @@ void State::machine()
         #if DEBUG_STATE_MACHINE
         if (debugTimer(millisThen))
         {
-          Serial.println("Eagle has Landed"); 
+          Serial.print("Eagle has Landed");
+          Serial.println(millis()/1000); 
         }
         #endif         
   
