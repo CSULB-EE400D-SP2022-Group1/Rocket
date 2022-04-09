@@ -46,8 +46,8 @@ void setup()
   digitalWrite(REDLEDPIN, 0);
   digitalWrite(GRNLEDPIN, 0);
 
-  //allGood = initSensors() && initStorage();
-  allGood = false;
+  allGood = initSensors() && initStorage();
+  //allGood = false;
 
   initState();
   
@@ -156,7 +156,8 @@ void runStorage()
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
   storage.runLogs();
   // Dump data to SD Card post landing confirmation
-  //if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  //if (fsm.getState() == Landing_Idle)
   {
     timer_32Hz.end();
     timer_100Hz.end();

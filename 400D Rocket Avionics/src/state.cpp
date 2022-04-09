@@ -210,8 +210,8 @@ void State::machine()
         Serial.println(millis()/1000);
       }
 
-      analogWrite(REDLEDPIN, 150);
-      digitalWrite(GRNLEDPIN, 0);
+      //analogWrite(REDLEDPIN, 150);
+      //digitalWrite(GRNLEDPIN, 0);
 
       #endif  
 
