@@ -6,6 +6,9 @@
 
 #define DEBUG false
 
+const uint8_t REDLEDPIN = 7;
+const uint8_t GRNLEDPIN = 8;
+
 IntervalTimer timer_32Hz; // BME
 IntervalTimer timer_100Hz; // IMU
 
@@ -17,13 +20,15 @@ myBME bme(9);
 myIMU imu;
 myGPS gps;
 
+bool allGood{0};
+
 State fsm;
 
 Data_Storage storage;
 
-void initSensors();
+bool initSensors();
 void initState();
-void initStorage();
+bool initStorage();
 
 void runSensors();
 void runState();
@@ -38,10 +43,17 @@ void setup()
   Serial.begin(1000000); // initialize fast serial comms
   delay(1000); // testing delay, not necessary for flight
 
-  initSensors();
-  init_timers();
+  pinMode(GRNLEDPIN, OUTPUT);
+  pinMode(REDLEDPIN, OUTPUT);
+
+  digitalWrite(REDLEDPIN, 0);
+  digitalWrite(GRNLEDPIN, 0);
+
+  allGood = initSensors() && initStorage();
+
   initState();
-  initStorage();
+  
+  init_timers();
 }
 
 uint32_t counter = 0;
@@ -49,39 +61,90 @@ uint32_t counter = 0;
 void loop()
 { 
   runSensors();
-  //runState();
+  runState();
   runStorage();
+
+  if (fsm.getState() == Pad_Idle)
+  {
+    analogWrite(GRNLEDPIN, 150);
+    digitalWrite(REDLEDPIN, 0);
+  }
+
+  if (fsm.getState() == Pad_Hold)
+  {
+    analogWrite(REDLEDPIN, 150);
+    digitalWrite(GRNLEDPIN, 0);
+  }
+
 }
 
 
-void initSensors()
+bool initSensors()
 {
-  // Initialize BME
-  bme.start();
+  bool sensorsWork{1};
 
-  // Initialize IMU
-  imu.start(10);
+  if(!bme.start() || !imu.start(10))
+  {
+    sensorsWork = 0;
+  }
 
   // Initialize GPS
   gps.start();
+
+  return sensorsWork;
 }
 
 
 void initState()
 {
   // Initialize State Machine
-  fsm.initializeMachine(true,&bme); // pass a true value if sensors are good
+  fsm.initializeMachine(allGood,&bme); // pass a true value if sensors are good
 }
 
 
-void initStorage()
+bool initStorage()
 {
   // Initialize File Storage  
   storage.init();
+  bool initSuccessful = 1;
+
+
+  //char dummy[13] = "fuck you.csv";
+
+
+  if (storage.exists(bme_filename))
+  {
+    storage.dumpFile(bme_filename);
+    initSuccessful = 0;
+  }
+
+  if (storage.exists(imu_filename))
+  {
+    storage.dumpFile(imu_filename);
+    initSuccessful = 0;
+  }
+
+  if (storage.exists(gps_filename))
+  {
+    storage.dumpFile(gps_filename);
+    initSuccessful = 0;
+  }
+
+  if (storage.exists(fsm_filename))
+  {
+    storage.dumpFile(fsm_filename);
+    initSuccessful = 0;
+  }
+  
   storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
-  storage.initFiles(&bme,&imu,&gps,&fsm);
+  if (initSuccessful)
+  {
+    storage.initFiles(&bme,&imu,&gps,&fsm);
+  }
 
   while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
+
+  return initSuccessful;
 }
 
 
@@ -108,9 +171,14 @@ void runStorage()
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
   storage.runLogs();
   // Dump data to SD Card post landing confirmation
-  if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  //if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  if (fsm.getState() == Landing_Idle)
   {
+    timer_32Hz.end();
+    timer_100Hz.end();
+
     storage.dumpData();
+
     while(1);
   }
 }

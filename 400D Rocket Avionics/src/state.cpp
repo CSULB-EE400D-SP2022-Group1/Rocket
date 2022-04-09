@@ -1,6 +1,6 @@
 #include "state_class.hpp"
 
-#define DEBUG_STATE_MACHINE false
+#define DEBUG_STATE_MACHINE true
 
 /*!
     @brief Initializes the state machine to 'Init' and provides pointer to myBME object
