@@ -6,9 +6,6 @@
 
 #define DEBUG false
 
-const uint8_t REDLEDPIN = 7;
-const uint8_t GRNLEDPIN = 8;
-
 IntervalTimer timer_32Hz; // BME
 IntervalTimer timer_100Hz; // IMU
 
@@ -49,7 +46,8 @@ void setup()
   digitalWrite(REDLEDPIN, 0);
   digitalWrite(GRNLEDPIN, 0);
 
-  allGood = initSensors() && initStorage();
+  //allGood = initSensors() && initStorage();
+  allGood = false;
 
   initState();
   
@@ -63,19 +61,6 @@ void loop()
   runSensors();
   runState();
   runStorage();
-
-  if (fsm.getState() == Pad_Idle)
-  {
-    analogWrite(GRNLEDPIN, 150);
-    digitalWrite(REDLEDPIN, 0);
-  }
-
-  if (fsm.getState() == Pad_Hold)
-  {
-    analogWrite(REDLEDPIN, 150);
-    digitalWrite(GRNLEDPIN, 0);
-  }
-
 }
 
 
@@ -172,7 +157,6 @@ void runStorage()
   storage.runLogs();
   // Dump data to SD Card post landing confirmation
   //if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
-  if (fsm.getState() == Landing_Idle)
   {
     timer_32Hz.end();
     timer_100Hz.end();

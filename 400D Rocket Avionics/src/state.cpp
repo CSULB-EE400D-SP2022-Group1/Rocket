@@ -16,6 +16,11 @@ void State::initializeMachine(bool sensors, myBME *someBME)
         thisBME = someBME;
         millisThen = millis();
     }
+
+    // else
+    // {
+    //   sensorsGreen = false;
+    // }
 }
 
 /*!
@@ -186,9 +191,12 @@ void State::machine()
         }
         #endif        
       }
-      
-    stateIndex = stateNext;
-    break;
+
+      analogWrite(GRNLEDPIN, 150);
+      digitalWrite(REDLEDPIN, 0);
+
+      stateIndex = stateNext;
+      break;
 
     case Pad_Hold:
       // reset flag
@@ -201,6 +209,10 @@ void State::machine()
         Serial.print("System Error. Restart required");
         Serial.println(millis()/1000);
       }
+
+      analogWrite(REDLEDPIN, 150);
+      digitalWrite(GRNLEDPIN, 0);
+
       #endif  
 
     stateIndex = stateNext;

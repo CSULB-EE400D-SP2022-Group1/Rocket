@@ -17,6 +17,9 @@
     
     const int DEBUG_OUT_INTERVAL = 500;                   // Moterating time (ms) of debug statements for terminal
 
+    const uint8_t REDLEDPIN = 7;
+    const uint8_t GRNLEDPIN = 8;
+
 
 enum state_list 
 {
