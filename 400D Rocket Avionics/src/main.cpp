@@ -8,7 +8,7 @@
 
 IntervalTimer timer_32Hz; // BME
 IntervalTimer timer_100Hz; // IMU
-
+ 
 uint64_t bme_last_update = 0;
 uint64_t imu_last_update = 0;
 uint64_t gps_last_update = 0;
@@ -45,9 +45,8 @@ void setup()
 
   digitalWrite(REDLEDPIN, 0);
   digitalWrite(GRNLEDPIN, 0);
-
+  
   allGood = initSensors() && initStorage();
-  //allGood = false;
 
   initState();
   
@@ -68,11 +67,17 @@ bool initSensors()
 {
   bool sensorsWork{1};
 
-  if(!bme.start() || !imu.start(10))
+  if(!bme.start())
   {
     sensorsWork = 0;
+    Serial.println("BME failed.");
   }
-
+  else if (!imu.start(10))
+  {
+    sensorsWork = 0;
+    Serial.println("IMU failed.");
+  }
+  
   // Initialize GPS
   gps.start();
 
@@ -126,6 +131,8 @@ bool initStorage()
   {
     storage.initFiles(&bme,&imu,&gps,&fsm);
   }
+  else
+    Serial.println("Data storage failed. Good luck");
 
   while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
 

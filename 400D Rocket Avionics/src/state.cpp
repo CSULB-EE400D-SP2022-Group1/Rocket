@@ -7,20 +7,20 @@
     @return void
 */
 void State::initializeMachine(bool sensors, myBME *someBME)
-{
+{   
     if (sensors == true)
-    {
+    {    
         stateNow = static_cast<state_list>(0);
         transition = static_cast<transition_list>(0);
+        millisThen = millis();
         sensorsGreen = true;
         thisBME = someBME;
-        millisThen = millis();
     }
-
-    // else
-    // {
-    //   sensorsGreen = false;
-    // }
+    
+    else
+    {
+      sensorsGreen = false;
+    }
 }
 
 /*!
@@ -210,8 +210,8 @@ void State::machine()
         Serial.println(millis()/1000);
       }
 
-      //analogWrite(REDLEDPIN, 150);
-      //digitalWrite(GRNLEDPIN, 0);
+      analogWrite(REDLEDPIN, 150);
+      digitalWrite(GRNLEDPIN, 0);
 
       #endif  
 
