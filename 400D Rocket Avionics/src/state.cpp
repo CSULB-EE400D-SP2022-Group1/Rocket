@@ -330,8 +330,9 @@ void State::machine()
     case Landing_Idle:
       // reset flag
       transitionEvent = false;
+      uint64_t time_at_landing_state = millis();
 
-        stateNext = Landing_Idle;
+        stateNow = Landing_Idle;
 
         #if DEBUG_STATE_MACHINE
         if (debugTimer())
@@ -341,7 +342,7 @@ void State::machine()
         }
         #endif         
   
-    stateIndex = stateNext;
+    stateIndex = stateNow;
     break;
 
   } // switch

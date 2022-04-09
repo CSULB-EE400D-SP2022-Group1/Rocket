@@ -377,32 +377,146 @@ void Data_Storage::logGPS()
 
 void Data_Storage::logFSM()
 {
+    String data;    
+    char filename[13] = "fsm000.csv";
+    bool ini{0}, p_hold{0}, p_idle{0}, asc{0}, des{0}, drifting{0}, l_idle{0};
+    
     if(lastState < ptrFSM->getState())
     {
         lastState++;
         switch(ptrFSM->getState())
         {
-        case 0:
-            Serial.println("STATE Init");
+        case Init:
+            //Serial.println("STATE Init");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is in initialization state";
+            if (!init)
+            {
+                writeData(filename,data);
+                ini = true;
+            }
             break;
-        case 1:
-            Serial.println("STATE Pad_Hold");
+        case Pad_Hold:
+            //Serial.println("STATE Pad_Hold");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is in pad hold state";
+            {
+                writeData(filename,data);
+                p_hold = true;
+            }
             break;
-        case 2:
-            Serial.println("STATE Pad_Idle");
+        case Pad_Idle:
+            //Serial.println("STATE Pad_Idle");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is in pad idle state";
+            {
+                writeData(filename,data);
+                p_idle = true;
+            }
             break;
-        case 3:
-            Serial.println("STATE Ascent");
+        case Ascent:
+            //Serial.println("STATE Ascent");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is ascending!";
+            {
+                writeData(filename,data);
+                asc = true;
+            }
             break;
-        case 4:
-            Serial.println("STATE Descent");
+        case Descent:
+            //Serial.println("STATE Descent");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is descending";
+            {
+                writeData(filename,data);
+                des = true;
+            }
             break;
-        case 5:
-            Serial.println("STATE Landing");
+        case Landing:
+            //Serial.println("STATE Landing");
+            data += String(micros());
+            data += ",";
+            data += "Rocket is drifting";
+            {
+                writeData(filename,data);
+                drifting = true;
+            }
             break;
-        case 6:
-            Serial.println("STATE Landing_Idle");
+        case Landing_Idle:
+            //Serial.println("STATE Landing_Idle");
+            data += String(micros());
+            data += ",";
+            data += "Rocket has landed, now idling...";
+            {
+                writeData(filename,data);
+                l_idle = true;
+            }
             break;
         }
     }
 }
+
+void Data_Storage::runOneLog()
+{
+    logOneBME();
+    logOneIMU();
+    logGPS();
+    logFSM();
+}
+
+void Data_Storage::logOneBME()
+{
+    if(ptrBME->getDataCount() >= bmeLastLogCount + bme_update_frequency)
+    {
+        bmeLastLogCount = ptrBME->getDataCount();
+        String data;
+        char filename[13] = "bme000.csv";
+
+        data += String(ptrBME->getTime(0));
+        data += ",";
+        data += String(ptrBME->getAltitude(0),4);
+        data += ",";
+        data += String(ptrBME->getTemp(0),0);
+        data += ",";
+        data += String(ptrBME->getHumidity(0),0);
+        
+        data += "\n";
+        
+        writeData(filename,data);
+    }
+} 
+
+void Data_Storage::logOneIMU()
+{
+    if(ptrIMU->getDataCount() >= imuLastLogCount + imu_update_frequency)
+    {
+        imuLastLogCount = ptrIMU->getDataCount();
+        String data;    
+        char filename[13] = "imu000.csv";
+        
+        
+        data += String(ptrIMU->getTime(0));
+        data += ",";
+        data += String(ptrIMU->getAccelX(0),4);
+        data += ",";
+        data += String(ptrIMU->getAccelY(0),4);
+        data += ",";
+        data += String(ptrIMU->getAccelZ(0),4);
+        data += ",";
+        data += String(ptrIMU->getGyroX(0),4);
+        data += ",";
+        data += String(ptrIMU->getGyroY(0),4);
+        data += ",";
+        data += String(ptrIMU->getGyroZ(0),4);
+       
+        data += "\n";
+
+        writeData(filename,data);
+    }
+}
+

@@ -49,4 +49,8 @@ public:
     void logIMU();
     void logGPS();
     void logFSM();
+
+    void runOneLog();
+    void logOneBME();
+    void logOneIMU();
 };

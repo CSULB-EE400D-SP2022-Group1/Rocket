@@ -3,7 +3,7 @@
 #include <Adafruit_BME280.h>
 #include <Arduino.h>
 
-const int ABOVE_BASELINE = 200;                           // meters above baseline for the rocket to be considered launched
+const int ABOVE_BASELINE = 50;                           // meters above baseline for the rocket to be considered launched
 const int BME_FREQ = 100;                                 // frequency at which BME is reading data
 static const int BME_LOGFREQ = 30;                        // desired buffer freq = 30, offset by 7 
 static const int SAMPLE_SIZE = 3 * BME_LOGFREQ;           // duration for averaging * frequency in Hz

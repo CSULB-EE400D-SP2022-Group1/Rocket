@@ -1,7 +1,6 @@
 #pragma once
 #include "myBME.h"
 
-
 // CRITICAL VARIABLE DEFINITIONS
 
     const int DATA_COUNT_LIMIT = 5;                       // Counter limit in detecting Apogee to transition into 'Descent' state
@@ -54,6 +53,7 @@ class State
 
         void machine();
 
+        uint64_t time_at_landing_state{0};
     private:
         // APOGEE
         bool detectApogee (uint32_t getDataCount);

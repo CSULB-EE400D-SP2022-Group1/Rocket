@@ -8,10 +8,11 @@
 
 IntervalTimer timer_32Hz; // BME
 IntervalTimer timer_100Hz; // IMU
- 
+
 uint64_t bme_last_update = 0;
 uint64_t imu_last_update = 0;
 uint64_t gps_last_update = 0;
+uint64_t sensors_last_update = 0;
 
 myBME bme(9);
 myIMU imu;
@@ -131,8 +132,6 @@ bool initStorage()
   {
     storage.initFiles(&bme,&imu,&gps,&fsm);
   }
-  else
-    Serial.println("Data storage failed. Good luck");
 
   while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
 
@@ -161,17 +160,40 @@ void runStorage()
   // RUN DATA LOGGING
   // If sensor logging is in high rate mode, log everytime the sensors sample
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
-  storage.runLogs();
   // Dump data to SD Card post landing confirmation
-  if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
-  //if (fsm.getState() == Landing_Idle)
+  // // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  if (fsm.getState() == Pad_Idle || fsm.getState() == Pad_Hold || fsm.getState() == Init)
   {
-    timer_32Hz.end();
-    timer_100Hz.end();
+    if (millis() >= sensors_last_update + 10000) // runs every 10 seconds
+    {
+      storage.runOneLog(); // stores most recent data from buffer to flash
+      sensors_last_update = millis();
+    }
+  }
+  else if (fsm.getState() == Landing_Idle)
+  {    
+    //checks if 40 seconds has passed since idle before dumping to SD card
+    if (fsm.time_at_landing_state >= millis() + (10+50)*1000) 
+    {
+      timer_32Hz.end();
+      timer_100Hz.end();
 
-    storage.dumpData();
+      storage.dumpData();
 
-    while(1);
+      while(1);
+    }
+
+    if (millis() >= sensors_last_update + 10000) // runs every 10 sec
+    {
+      storage.runOneLog(); 
+      sensors_last_update = millis();
+    }
+
+  }
+
+  else // all other states (Ascent, Descent, Landing)
+  {
+    storage.runLogs();
   }
 }
 
