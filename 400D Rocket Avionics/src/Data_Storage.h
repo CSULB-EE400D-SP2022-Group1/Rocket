@@ -10,6 +10,10 @@ const uint8_t bme_update_frequency = 32;
 const uint8_t imu_update_frequency = 100;
 const uint8_t gps_update_frequency = 1;
 
+static char bme_filename[13] = "bme000.csv";
+static char imu_filename[13] = "imu000.csv";
+static char gps_filename[13] = "gps000.csv";
+static char fsm_filename[13] = "fsm000.csv";
 
 class Data_Storage : public LittleFS_QSPIFlash
 {

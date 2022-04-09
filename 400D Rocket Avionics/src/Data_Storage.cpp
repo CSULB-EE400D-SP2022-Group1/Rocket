@@ -30,7 +30,7 @@ bool Data_Storage::initFileBME(myBME* ptr)
 {
     ptrBME = ptr;
     // Initialize BME280 Data File
-    char filename[13] = "BME.csv";
+    char filename[13] = "bme000.csv";
     String data;
     data = "uC Clock (us)";
     data += ",";
@@ -56,7 +56,7 @@ bool Data_Storage::initFileIMU(myIMU* ptr)
 {
     ptrIMU = ptr;
     // Initialize IMU (ICM20649) Data File
-    char filename[13] = "IMU.csv";
+    char filename[13] = "imu000.csv";
     String data;
     data = "uC Clock (us)";
     data += ",";
@@ -90,7 +90,7 @@ bool Data_Storage::initFileGPS(myGPS* ptr)
 {
     ptrGPS = ptr;
     // Initialize GPS Data File
-    char filename[13] = "GPS.csv";
+    char filename[13] = "gps000.csv";
     String data;
     data = "uC Clock (us)";
     data += ",";
@@ -136,7 +136,7 @@ bool Data_Storage::initFileFSM(State* ptr)
 {
     ptrFSM = ptr;
     // Initialize GPS Data File
-    char filename[13] = "FSM.csv";
+    char filename[13] = "fsm000.csv";
     String data;
     data = "uC Clock (us)";
     data += ",";
@@ -219,20 +219,13 @@ bool Data_Storage::dumpData()
     else
     {   Serial.println("SD Card Successfully Initialized"); }
 
-    SD.remove("BME.csv");
-    SD.remove("IMU.csv");
-    SD.remove("GPS.csv");
-    SD.remove("FSM.csv");
+    dumpFile(bme_filename);
+    dumpFile(imu_filename);
+    dumpFile(gps_filename);
+    dumpFile(fsm_filename);
     
-    char filename1[13] = "BME.csv";
-    dumpFile(filename1);
-    char filename2[13] = "IMU.csv";
-    dumpFile(filename2);
-    char filename3[13] = "GPS.csv";
-    dumpFile(filename3);
-    char filename4[13] = "FSM.csv";
-    dumpFile(filename4);
-    
+    quickFormat();
+
     return 1;
 }
 
@@ -241,9 +234,25 @@ bool Data_Storage::dumpFile(char filename[13])
 {
     Serial.print("Dumping ");
     Serial.print(filename);
-    Serial.print(" to SD Card.....");
-    File dataFile = open(filename, FILE_READ);    
+    Serial.print(" to SD Card ");
+    File dataFile = open(filename, FILE_READ); 
+
+    for (int i = 0; i < 1000; ++i)
+    {   
+        filename[3] = i/100 + '0';
+        filename[4] = i/10 + '0';
+        filename[5] = i%10 + '0';
+
+        if(!SD.exists(filename)) 
+        {
+            break;
+        }
+    }
+
     File dumpFile = SD.open(filename, FILE_WRITE);
+    Serial.print("as ");
+    Serial.print(filename);
+
     while(dataFile.available())
     {        
         char data[13];
@@ -273,7 +282,7 @@ void Data_Storage::logBME()
     {
         bmeLastLogCount = ptrBME->getDataCount();
         String data;
-        char filename[13] = "BME.csv";
+        char filename[13] = "bme000.csv";
 
         for(int i = bme_update_frequency - 1; i >= 0 ; i--)
         {
@@ -300,7 +309,7 @@ void Data_Storage::logIMU()
     {
         imuLastLogCount = ptrIMU->getDataCount();
         String data;    
-        char filename[13] = "IMU.csv";
+        char filename[13] = "imu000.csv";
         
         for(int i = imu_update_frequency - 1; i >= 0 ; i--)
         {
@@ -333,7 +342,7 @@ void Data_Storage::logGPS()
     {
         gpsLastLogTime = millis();
         String data;    
-        char filename[13] = "GPS.csv";
+        char filename[13] = "gps000.csv";
         data += String(micros());
         data += ",";
         data += String(ptrGPS->getLat(),5);
