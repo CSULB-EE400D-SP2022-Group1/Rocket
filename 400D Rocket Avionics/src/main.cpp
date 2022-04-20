@@ -7,7 +7,7 @@
 #define DEBUG false
 
 IntervalTimer timer_32Hz; // BME
-IntervalTimer timer_100Hz; // IMU
+IntervalTimer timer_50Hz; // IMU
 
 uint64_t bme_last_update = 0;
 uint64_t imu_last_update = 0;
@@ -33,12 +33,12 @@ void runStorage();
 
 void init_timers();
 void timer_32Hz_func();
-void timer_100Hz_func();
+void timer_50Hz_func();
 
 void setup()
 {
   Serial.begin(1000000); // initialize fast serial comms
-  delay(1000); // testing delay, not necessary for flight
+  delay(5000); // testing delay, not necessary for flight
 
   pinMode(GRNLEDPIN, OUTPUT);
   pinMode(REDLEDPIN, OUTPUT);
@@ -47,7 +47,6 @@ void setup()
   digitalWrite(GRNLEDPIN, 0);
 
   allGood = initSensors() && initStorage();
-  //allGood = false;
 
   initState();
   
@@ -94,31 +93,39 @@ bool initStorage()
   bool initSuccessful = 1;
 
 
+    if(!SD.begin(BUILTIN_SDCARD)) // attempt to start QSPI NOR Flash
+    {
+        Serial.println("SD CARD FAILED TO INITITALIZE");
+        return 0; // Fail
+    }
+    else
+    {   Serial.println("SD Card Successfully Initialized"); }
+
   //char dummy[13] = "fuck you.csv";
 
 
   if (storage.exists(bme_filename))
   {
     storage.dumpFile(bme_filename);
-    initSuccessful = 0;
+    //initSuccessful = 0;
   }
 
   if (storage.exists(imu_filename))
   {
     storage.dumpFile(imu_filename);
-    initSuccessful = 0;
+    //initSuccessful = 0;
   }
 
   if (storage.exists(gps_filename))
   {
     storage.dumpFile(gps_filename);
-    initSuccessful = 0;
+    //initSuccessful = 0;
   }
 
   if (storage.exists(fsm_filename))
   {
     storage.dumpFile(fsm_filename);
-    initSuccessful = 0;
+    //initSuccessful = 0;
   }
   
   storage.formatFlash();  // may not want to format on bootup (possible inflight data loss)
@@ -126,8 +133,6 @@ bool initStorage()
   {
     storage.initFiles(&bme,&imu,&gps,&fsm);
   }
-
-  while(millis() <= 10*1000); // wait till 10 seconds after bootup, only meant for testing
 
   return initSuccessful;
 }
@@ -156,11 +161,11 @@ void runStorage()
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
   storage.runLogs();
   // Dump data to SD Card post landing confirmation
-  if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
-  //if (fsm.getState() == Landing_Idle)
+  //if(millis() >= (10+30)*1000) // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
+  if (fsm.getState() == Landing_Idle)
   {
     timer_32Hz.end();
-    timer_100Hz.end();
+    timer_50Hz.end();
 
     storage.dumpData();
 
@@ -171,11 +176,11 @@ void runStorage()
 void init_timers()
 {
   SPI.usingInterrupt(timer_32Hz);
-  SPI.usingInterrupt(timer_100Hz);
+  SPI.usingInterrupt(timer_50Hz);
   timer_32Hz.begin(timer_32Hz_func,1000000/bme_update_frequency); // 30 Hz interrupt
   timer_32Hz.priority(129);
-  timer_100Hz.begin(timer_100Hz_func,1000000/imu_update_frequency); // 100 Hz interrupt
-  timer_100Hz.priority(128);
+  timer_50Hz.begin(timer_50Hz_func,1000000/imu_update_frequency); // 100 Hz interrupt
+  timer_50Hz.priority(128);
 }
 
 
@@ -185,7 +190,7 @@ void timer_32Hz_func()
 }
 
 
-void timer_100Hz_func()
+void timer_50Hz_func()
 {
   imu.getData();
 }

@@ -17,10 +17,10 @@ void State::initializeMachine(bool sensors, myBME *someBME)
         millisThen = millis();
     }
 
-    // else
-    // {
-    //   sensorsGreen = false;
-    // }
+    else
+    {
+      sensorsGreen = false;
+    }
 }
 
 /*!
@@ -210,8 +210,8 @@ void State::machine()
         Serial.println(millis()/1000);
       }
 
-      //analogWrite(REDLEDPIN, 150);
-      //digitalWrite(GRNLEDPIN, 0);
+      analogWrite(REDLEDPIN, 150);
+      digitalWrite(GRNLEDPIN, 0);
 
       #endif  
 
@@ -331,7 +331,7 @@ void State::machine()
       // reset flag
       transitionEvent = false;
 
-        stateNext = Landing_Idle;
+        stateNow = Landing_Idle;
 
         #if DEBUG_STATE_MACHINE
         if (debugTimer())
@@ -341,7 +341,7 @@ void State::machine()
         }
         #endif         
   
-    stateIndex = stateNext;
+    stateIndex = stateNow;
     break;
 
   } // switch

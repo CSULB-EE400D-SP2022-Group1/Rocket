@@ -70,9 +70,7 @@ bool Data_Storage::initFileIMU(myIMU* ptr)
     data += ",";
     data += "Y Gyro (rad/s)";
     data += ",";
-    data += "Z Gyro (rad/s)";
-    data += ",";
-    data += "Temperature (C)";     
+    data += "Z Gyro (rad/s)"; 
 
     bool createdFile = writeData(filename,data);
     
@@ -211,14 +209,6 @@ void Data_Storage::printData(char filename[13])
 
 bool Data_Storage::dumpData()
 {
-    if(!SD.begin(BUILTIN_SDCARD)) // attempt to start QSPI NOR Flash
-    {
-        Serial.println("SD CARD FAILED TO INITITALIZE");
-        return 0; // Fail
-    }
-    else
-    {   Serial.println("SD Card Successfully Initialized"); }
-
     dumpFile(bme_filename);
     dumpFile(imu_filename);
     dumpFile(gps_filename);
@@ -288,7 +278,7 @@ void Data_Storage::logBME()
         {
             data += String(ptrBME->getTime(i));
             data += ",";
-            data += String(ptrBME->getAltitude(i),4);
+            data += String(ptrBME->getAltitude(i),1);
             data += ",";
             data += String(ptrBME->getTemp(i),0);
             data += ",";
@@ -315,17 +305,17 @@ void Data_Storage::logIMU()
         {
             data += String(ptrIMU->getTime(i));
             data += ",";
-            data += String(ptrIMU->getAccelX(i),4);
+            data += String(ptrIMU->getAccelX(i),2);
             data += ",";
-            data += String(ptrIMU->getAccelY(i),4);
+            data += String(ptrIMU->getAccelY(i),2);
             data += ",";
-            data += String(ptrIMU->getAccelZ(i),4);
+            data += String(ptrIMU->getAccelZ(i),2);
             data += ",";
-            data += String(ptrIMU->getGyroX(i),4);
+            data += String(ptrIMU->getGyroX(i),2);
             data += ",";
-            data += String(ptrIMU->getGyroY(i),4);
+            data += String(ptrIMU->getGyroY(i),2);
             data += ",";
-            data += String(ptrIMU->getGyroZ(i),4);
+            data += String(ptrIMU->getGyroZ(i),2);
             if(i > 0)
             {
                 data += "\n";
@@ -377,6 +367,7 @@ void Data_Storage::logGPS()
 
 void Data_Storage::logFSM()
 {
+    /*
     if(lastState < ptrFSM->getState())
     {
         lastState++;
@@ -404,5 +395,6 @@ void Data_Storage::logFSM()
             Serial.println("STATE Landing_Idle");
             break;
         }
-    }
+    }\
+    */
 }

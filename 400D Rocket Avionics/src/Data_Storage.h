@@ -7,7 +7,7 @@
 #include "state_class.hpp"
 
 const uint8_t bme_update_frequency = 32;
-const uint8_t imu_update_frequency = 100;
+const uint8_t imu_update_frequency = 50;
 const uint8_t gps_update_frequency = 1;
 
 static char bme_filename[13] = "bme000.csv";
