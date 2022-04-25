@@ -99,10 +99,6 @@ bool initStorage()
   storage.init();
   bool initSuccessful = 1;
 
-
-  //char dummy[13] = "fuck you.csv";
-
-
   if (storage.exists(bme_filename))
   {
     storage.dumpFile(bme_filename);
