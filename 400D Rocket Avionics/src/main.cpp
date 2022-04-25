@@ -101,9 +101,6 @@ bool initStorage()
     else
     {   Serial.println("SD Card Successfully Initialized"); }
 
-  //char dummy[13] = "fuck you.csv";
-
-
   if (storage.exists(bme_filename))
   {
     storage.dumpFile(bme_filename);
