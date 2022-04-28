@@ -156,7 +156,7 @@ void runStorage()
   // RUN DATA LOGGING
   // If sensor logging is in high rate mode, log everytime the sensors sample
   // If sensor logging is in low rate mode, log only a small subset of times the sensors sample
-  // Dump data to SD Card post landing confirmation
+  // Dump data to SD Card post landing confirmation.
   // // testing after 70 seconds past bootup, real code executes when FSM landing flag goes high
   if (fsm.getState() == Pad_Idle || fsm.getState() == Pad_Hold || fsm.getState() == Init)
   {
