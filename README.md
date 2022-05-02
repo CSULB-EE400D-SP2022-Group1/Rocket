@@ -31,14 +31,13 @@
 <div align="center">
   <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket">
     <img src="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/blob/main/Media/Splash_logo.JPG" alt="Logo" width="1200" height="540">
+    
   </a>
 
 <h3 align="center">Model Rocket Avionics Module</h3>
 
   <p align="center">
     The Rocketry Avionics project set out to design a rocketry avionics flight board that could record data in flight, perform data processing, and control functions in flight on the rocket. Sensors that measure barometric pressure, acceleration, and gyroscopic forces, as well as GPS position, can provide valuable data for a rocket flight both in the atmosphere as well as in a vacuum if the rocket was capable of such altitude. Processing of that data can allow for functionality of onboard systems such as recovery which must deploy parachutes at proper times to ensure the safe recovery of the rocket. Onboard cameras can provide invaluable data for post-flight system analysis.
-    
-    [Check this out](https://drive.google.com/file/d/11XUm5x9ZL7Wk4GBUijjpptF8xkAVN2NK/view?usp=sharing)
     <br />
 <!--
     <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket"><strong>Explore the docs »</strong></a>
@@ -86,6 +85,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+[Check this out](https://drive.google.com/file/d/11XUm5x9ZL7Wk4GBUijjpptF8xkAVN2NK/view?usp=sharing)
 <!--
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
