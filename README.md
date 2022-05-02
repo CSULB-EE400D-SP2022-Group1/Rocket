@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket">
-    <img src="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/blob/main/Media/Splash_logo.JPG" alt="Logo" width="1200" height="660">
+    <img src="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/blob/main/Media/Splash_logo.JPG" alt="Logo" width="1200" height="600">
   </a>
 
 <h3 align="center">Model Rocket Avionics Module</h3>
