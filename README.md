@@ -30,13 +30,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket">
-    <img src="/Media/Splash_logo.jpeg" alt="Logo" width="80" height="80">
+    <img src="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/blob/main/Media/Splash_logo.JPG" alt="Logo" width="1280" height="600">
   </a>
 
 <h3 align="center">Model Rocket Avionics Module</h3>
 
   <p align="center">
-    Our group will design and code a model rocket avionics module.
+    The Rocketry Avionics project set out to design a rocketry avionics flight board that could record data in flight, perform data processing, and control functions in flight on the rocket. Sensors that measure barometric pressure, acceleration, and gyroscopic forces, as well as GPS position, can provide valuable data for a rocket flight both in the atmosphere as well as in a vacuum if the rocket was capable of such altitude. Processing of that data can allow for functionality of onboard systems such as recovery which must deploy parachutes at proper times to ensure the safe recovery of the rocket. Onboard cameras can provide invaluable data for post-flight system analysis. 
     <br />
 <!--
     <a href="https://github.com/CSULB-EE400D-SP2022-Group1/Rocket"><strong>Explore the docs »</strong></a>
@@ -94,9 +94,10 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 
 ### Built With
-
+* [VS Code](https://code.visualstudio.com/)
 * [PlatformIO](https://platformio.org/)
 * [C++](https://isocpp.org/)
+* [Arduino](https://www.arduino.cc/)
 * [Python](https://www.python.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -150,21 +151,19 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -->
 
 
-<!-- ROADMAP -->
+<!-- ROADMAP
 ## Roadmap
 
-- [ ] Sensor Suite
-    - [ ] BME
-    - [ ] IMU
-    - [ ] GPS 
-- [ ] State Machine
-- [ ] Pyro-Deploy Chute Recovery System
-- [ ] DC-DC Converter Power Supply
+- [x] Sensor Suite
+    - [x] BME
+    - [x] IMU
+    - [x] GPS 
+- [x] State Machine
 
 See the [open issues](https://github.com/CSULB-EE400D-SP2022-Group1/Rocket/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
+-->
 
 
 <!-- CONTRIBUTING -->
@@ -192,16 +191,30 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Project Link: [https://github.com/CSULB-EE400D-SP2022-Group1/Rocket](https://github.com/CSULB-EE400D-SP2022-Group1/Rocket)
 
+Anthony Morehouse - [LinkedIn](https://www.linkedin.com/in/amorehouse13p/)
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
+Our families<br/>For putting up with our long hours we needed to dedicate to our project.
 
-* [tinyFSM](https://github.com/digint/tinyfsm)
-* []()
-* []()
+[PJRC - Teensy](https://www.pjrc.com/teensy/)<br/>The Teensy microcontroller platform was what we based our Flight Controller which ran the entire system.
+
+[Adafruit - Sensors](https://www.adafruit.com/)<br/>Without Adafruit’s sensor breakout boards hardware, software, and documentation ecosystem we would have required much more than one semester to create a sensor suite to meet our requirements.
+
+[Runcam](https://www.runcam.com/) - Cameras<br/>Runcam’s Split 4 camera system performed flawlessly in flight and captured amazing HD video that both shows the stunning launch event as well as very beneficial for our post-flight review.
+
+[Eggtimer Rocketry](http://eggtimerrocketry.com/)<br/>The Eggtimer Quantum electronic recovery boards that we depended on to deploy the recovery system worked flawlessly in flight which allowed us to recover the rocket, our custom flight boards, data that was on the custom flight boards, cameras, and essentially ensured that we had a safe flight.
+
+[Aerotech Consumer Aerospace](https://aerotech-rocketry.com/)<br/>Manufactured the J435 solid rocket motor that allowed us to send our project 970 meters into the air.
+
+[Rocketry Organization of California (ROC)](https://rocstock.org/)<br/>Provided our launch site and flight waiver necessary for our flight.
+
+[National Association of Rocketry (NAR)](https://www.nar.org/)<br/>Provided the guidelines for safely launching high powered rockets.
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
