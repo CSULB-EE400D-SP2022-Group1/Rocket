@@ -194,6 +194,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 Project Link: [https://github.com/CSULB-EE400D-SP2022-Group1/Rocket](https://github.com/CSULB-EE400D-SP2022-Group1/Rocket)
 
 Anthony Morehouse - [LinkedIn](https://www.linkedin.com/in/amorehouse13p/)
+Khue Phung - [LinkedIn](https://www.linkedin.com/in/khue-phung-5456021b2/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
