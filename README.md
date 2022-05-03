@@ -36,7 +36,7 @@
 
 <h3 align="center">Rocketry Avionics Project</h3>
 
-  <p align="center">
+  <p align="left">
     The Rocketry Avionics project set out to design a rocketry avionics flight board that could record data in flight, perform data processing, and control functions in flight on the rocket. Sensors that measure barometric pressure, acceleration, and gyroscopic forces, as well as GPS position, can provide valuable data for a rocket flight both in the atmosphere as well as in a vacuum if the rocket was capable of such altitude. Processing of that data can allow for functionality of onboard systems such as recovery which must deploy parachutes at proper times to ensure the safe recovery of the rocket. Onboard cameras can provide invaluable data for post-flight system analysis.
     <br />
 <!--
