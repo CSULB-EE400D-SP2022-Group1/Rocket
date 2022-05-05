@@ -197,6 +197,8 @@ Anthony Morehouse - [LinkedIn](https://www.linkedin.com/in/amorehouse13p/)
 
 Khue Phung - [LinkedIn](https://www.linkedin.com/in/khue-phung-5456021b2/)
 
+Brandon Summers - [LinkedIn](https://www.linkedin.com/in/brandonleesummers/)
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
